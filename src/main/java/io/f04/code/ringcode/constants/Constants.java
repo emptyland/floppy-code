@@ -53,6 +53,8 @@ public interface Constants {
 
     int RING_WIDTH = 7;
 
+    int ANCHOR_WIDTH = 4;
+
     int[] RING31_ANGLES = {
             3, 3, 3, 3, 3, 3, 3, 3,  3,  3,  // 10
             3, 3, 3, 3, 3, 3, 3, 3,  3,  3,  // 20

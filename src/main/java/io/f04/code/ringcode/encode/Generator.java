@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -84,7 +85,7 @@ public class Generator {
     private void drawAnchors(Graphics2D gs, int imageSize) {
         gs.setColor(Color.BLACK);
 
-        int r1 = 4;
+        int r1 = Constants.ANCHOR_WIDTH;
         int w2 = (int)(r1 / 0.8f);
         int w1 = (int)(r1 * 2 + w2 + w2 * 1.2f * 2);
         gs.setStroke(new BasicStroke(r1));
@@ -120,9 +121,11 @@ public class Generator {
         // draw metadata:
         int minAngle = angles[angles.length - 1];
         byte[] metadata = new byte[(360 / minAngle + 7) / 8];
-        Arrays.fill(metadata, (byte)0xaa);
-        metadata[0] = (byte)((data.length << 8) ^ 0xaa);
-        metadata[1] = (byte)((data.length & 0x00ff) ^ 0xaa);
+        ByteBuffer.wrap(metadata).putShort((short)this.data.length);
+        for (int i = 0; i < metadata.length; i++) {
+            metadata[i] ^= 0xaa;
+        }
+        System.out.println(Arrays.toString(metadata));
         Color color = ringColors.get((ringSize - 1) % ringColors.size());
         drawRing(gs, position, position, size, minAngle, color, metadata, 0);
     }
@@ -135,6 +138,7 @@ public class Generator {
 
             if (one) {
                 //println("value: $value $angle ${angle + minAngle}")
+                //System.out.println(String.format("[%d]one, (%s, %s)", bits, angle, angle + minAngle));
                 gs.fillArc(x, y, size, size, angle, minAngle);
             } // not need draw zero.
             angle += minAngle;

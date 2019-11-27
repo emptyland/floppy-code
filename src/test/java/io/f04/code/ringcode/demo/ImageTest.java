@@ -38,6 +38,7 @@ public class ImageTest {
         // 保存二值化后图片
         Imgcodecs.imwrite("src/test/resources/3-b1.png", target);
 
+
         //Imgproc.findContours();
     }
 
@@ -132,4 +133,28 @@ public class ImageTest {
 //        gs.dispose()
 //        return image
 //    }
+
+    @Test
+    public void testBinary() throws Exception {
+        byte[] d = {-86, -5, -86};
+        printBinary(d);
+
+        byte[] b = {-85, -6, 2};
+        printBinary(b);
+    }
+
+    private void printBinary(byte[] d) {
+        StringBuilder sb = new StringBuilder();
+        for (byte b: d) {
+            for (int i = 0; i < 8; i++) {
+                if ((b & (1 << i)) != 0) {
+                    sb.append("1");
+                } else {
+                    sb.append("0");
+                }
+            }
+            sb.append(" ");
+        }
+        System.out.println(sb.toString());
+    }
 }
