@@ -2,10 +2,15 @@ package io.f04.code.ringcode.decode;
 
 import io.f04.code.ringcode.constants.Constants;
 import io.f04.code.ringcode.enums.ErrorCorrectionLevel;
+import io.f04.code.ringcode.exceptions.BadDataSizeException;
 import io.f04.code.ringcode.exceptions.BadMetadataException;
+import io.f04.code.ringcode.utils.CodecUtil;
 
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public class Reader {
@@ -31,15 +36,36 @@ public class Reader {
     }
 
     // 25
-    public byte[] read(BufferedImage rawImage, int centerX, int centerY) throws BadMetadataException {
+    public byte[] read(BufferedImage rawImage, int centerX, int centerY) throws BadMetadataException, BadDataSizeException {
         double angle = (2 * Math.PI) / 18;
         int r = ringWidth * 4;
 
-        //List<Boolean> sample = new ArrayList<>();
+        List<Boolean> bits = new ArrayList<>();
         Metadata metadata = readMetadata(rawImage, r, angle, centerX, centerY);
-        //Math.sin()
-        return null;
+        System.out.println("^^^^^^^^^^^^^^^^^^^^^^^");
+        for (int i = 0; i < Constants.RING15 - 1; i++) {
+            angle = (2 * Math.PI) / (360.0 / Constants.RING15_ANGLES[i]);
+            r = ringWidth * (4 + Constants.RING15 - i - 1);
+
+            for (int j = 0; j < 360 / Constants.RING15_ANGLES[i]; j++) {
+                bits.add(testSample(rawImage, r, j * angle, (j + 1) * angle, centerX, centerY));
+            }
+        }
+        byte[] code = new byte[(bits.size() + 7) / 8];
+        for (int i = 0; i < bits.size(); i++) {
+            code[i / 8] |= bits.get(i) ? (1 << (i % 8)) : 0;
+        }
+
+        Decoder decoder = new Decoder(metadata.getErrorCorrectionLevel());
+        byte[] data = decoder.decode(code, CodecUtil.makeType2(Constants.RING15_MAX_BYTES), Constants.RING15_MAX_BYTES);
+        return Arrays.copyOf(data, metadata.dataSize);
     }
+
+//    private void readRing(BufferedImage rawImage, int r, double angle, int centerX, int centerY, int limit, List<Boolean> bits) {
+//        for (int i = 0; i < limit; ++i) {
+//            bits.add(testSample(rawImage, r, i * angle, (i + 1) * angle, centerX, centerY));
+//        }
+//    }
 
     private Metadata readMetadata(BufferedImage rawImage, int r, double angle, int centerX, int centerY) throws BadMetadataException {
         byte[] metadata = new byte[(18 + 7) / 8];
@@ -77,7 +103,7 @@ public class Reader {
             int y = (int)(centerY - t * Math.sin(angle));
 
             boolean one = rawImage.getRGB(x, y) != 0xffffffff;
-            //System.out.println(String.format("(%s, %s) %s", x, y, one));
+            System.out.println(String.format("(%s, %s) %s", x, y, one));
 
             if (one) {
                 countOne++;
@@ -85,7 +111,7 @@ public class Reader {
                 countZero++;
             }
         }
-        //System.out.println("---------------");
+        System.out.println("---------------");
         return countOne > countZero;
     }
 

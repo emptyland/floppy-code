@@ -38,7 +38,6 @@ public class Decoder {
 
         // Use Reed-Solomon to fill in the missing shards
         ReedSolomon reedSolomon = ReedSolomon.create(level.getDataShardCount(), level.getParityShardCount());
-        //reedSolomon.isParityCorrect()
         reedSolomon.decodeMissing(shards, shardPresent, 0, shardSize);
 
         final byte[] output = new byte[shardSize * level.getDataShardCount()];

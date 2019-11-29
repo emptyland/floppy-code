@@ -5,6 +5,7 @@ import org.junit.Test;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 
 import static org.junit.Assert.assertEquals;
 
@@ -16,6 +17,7 @@ public class ReaderTest {
         BufferedImage image = ImageIO.read(new File("src/test/resources/3-b1.png"));
         assertEquals(280, image.getHeight());
         assertEquals(280, image.getWidth());
-        reader.read(image, 140, 140);
+        byte[] data = reader.read(image, 140, 140);
+        assertEquals("Hello, World!", new String(data, StandardCharsets.UTF_8));
     }
 }
