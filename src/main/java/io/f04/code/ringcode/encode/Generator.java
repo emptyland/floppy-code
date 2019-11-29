@@ -1,7 +1,9 @@
 package io.f04.code.ringcode.encode;
 
 import io.f04.code.ringcode.constants.Constants;
-import io.f04.code.ringcode.utils.MaskUtil;
+import io.f04.code.ringcode.enums.ErrorCorrectionLevel;
+import io.f04.code.ringcode.exceptions.BadDataSizeException;
+import io.f04.code.ringcode.utils.CodecUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -22,6 +24,8 @@ public class Generator {
 
     private int ringSize = Constants.RING15;
 
+    private ErrorCorrectionLevel errorCorrectionLevel = ErrorCorrectionLevel.M;
+
     private List<Color> ringColors = new ArrayList<Color>() {
         {
             add(new Color(0x00, 0x00, 0x00));
@@ -30,7 +34,7 @@ public class Generator {
 
     public void setData(byte[] data) {
         Constants.RingProfile profile = Constants.RINGS_PROFILE.get(ringSize);
-        if (profile == null || data.length > profile.getMaxBytes()) {
+        if (profile == null || data.length > errorCorrectionLevel.computePayloadSize(profile.getMaxBytes())) {
             throw new IllegalArgumentException("bad data size.");
         }
         this.data = data;
@@ -56,15 +60,23 @@ public class Generator {
         this.ringColors = ringColors;
     }
 
-    public void toFile(File outFile, String format) throws IOException {
+    public ErrorCorrectionLevel getErrorCorrectionLevel() {
+        return errorCorrectionLevel;
+    }
+
+    public void setErrorCorrectionLevel(ErrorCorrectionLevel errorCorrectionLevel) {
+        this.errorCorrectionLevel = errorCorrectionLevel;
+    }
+
+    public void toFile(File outFile, String format) throws IOException, BadDataSizeException {
         BufferedImage bi = toBufferedImage();
         ImageIO.write(bi, format, outFile);
     }
 
-    public BufferedImage toBufferedImage() {
-        Encoder encoder = new Encoder();
+    public BufferedImage toBufferedImage() throws BadDataSizeException {
+        Encoder encoder = new Encoder(errorCorrectionLevel);
         Constants.RingProfile profile = Constants.RINGS_PROFILE.get(ringSize);
-        byte[] mask = MaskUtil.makeType2(profile.getMaxBytes());
+        byte[] mask = CodecUtil.makeType2(profile.getMaxBytes());
         byte[] code = encoder.encode(data, mask, profile.getMaxBytes());
         BufferedImage image = new BufferedImage(profile.getImageSize(), profile.getImageSize(), BufferedImage.TYPE_INT_ARGB);
         Graphics2D gs = image.createGraphics();
@@ -121,7 +133,9 @@ public class Generator {
         // draw metadata:
         int minAngle = angles[angles.length - 1];
         byte[] metadata = new byte[(360 / minAngle + 7) / 8];
-        ByteBuffer.wrap(metadata).putShort((short)this.data.length);
+        ByteBuffer.wrap(metadata)
+                .putShort((short)this.data.length)
+                .put((byte)errorCorrectionLevel.ordinal());
         for (int i = 0; i < metadata.length; i++) {
             metadata[i] ^= 0xaa;
         }

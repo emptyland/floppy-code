@@ -1,15 +1,16 @@
 package io.f04.code.ringcode.decode;
 
+import io.f04.code.ringcode.constants.Constants;
+import io.f04.code.ringcode.enums.ErrorCorrectionLevel;
+import io.f04.code.ringcode.exceptions.BadMetadataException;
+
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 
 public class Reader {
 
-    private int ringWidth = 5;
+    private int ringWidth = Constants.RING_WIDTH;
 
     private int sampleTimes = 5;
 
@@ -30,37 +31,45 @@ public class Reader {
     }
 
     // 25
-    public byte[] read(BufferedImage rawImage, int centerX, int centerY) {
+    public byte[] read(BufferedImage rawImage, int centerX, int centerY) throws BadMetadataException {
         double angle = (2 * Math.PI) / 18;
-        int r = ringWidth * 6;
+        int r = ringWidth * 4;
 
         //List<Boolean> sample = new ArrayList<>();
-        readMetadata(rawImage, r, angle, centerX, centerY);
+        Metadata metadata = readMetadata(rawImage, r, angle, centerX, centerY);
         //Math.sin()
         return null;
     }
 
-    private int readMetadata(BufferedImage rawImage, int r, double angle, int centerX, int centerY) {
-        //List<Boolean> sample = new ArrayList<>();
+    private Metadata readMetadata(BufferedImage rawImage, int r, double angle, int centerX, int centerY) throws BadMetadataException {
         byte[] metadata = new byte[(18 + 7) / 8];
-        //Arrays.fill(metadata, (byte)0xaa);
         for (int i = 0; i < 18; ++i) {
             boolean sample = testSample(rawImage, r, i * angle, (i + 1) * angle, centerX, centerY);
             metadata[i / 8] |= sample ? (1 << i % 8) : 0;
         }
-        for (int i = 0; i < metadata.length; i++) {
+        for (int i = 0; i < metadata.length - 1; i++) {
             metadata[i] ^= 0xaa;
         }
-        int code = ByteBuffer.wrap(metadata).getShort();
-        System.out.println(String.format("%s | %d", Arrays.toString(metadata), code));
-        return code;
+        metadata[metadata.length - 1] ^= 0x2;
+        ByteBuffer buffer = ByteBuffer.wrap(metadata);
+        int size = buffer.getShort();
+        if (size < 0) {
+            throw new BadMetadataException("bad data size");
+        }
+
+        int level = buffer.get();
+        if (level < 0 || level >= ErrorCorrectionLevel.values().length) {
+            throw new BadMetadataException("bad ErrorCorrectionLevel (" + level + ")");
+        }
+
+        return new Metadata(ErrorCorrectionLevel.values()[level], size);
     }
 
     private boolean testSample(BufferedImage rawImage, int r, double beginAngle, double endAngle, int centerX, int centerY) {
         Random rand = new Random();
         int countOne = 0, countZero = 0;
         for (int i = 0; i < sampleTimes; i++) {
-            double t = r + rand.nextInt(4);
+            double t = r + 1 + rand.nextInt(ringWidth - 1);
             //double t = r + 3;
             double angle = nextDouble(rand, beginAngle, endAngle);
             assert angle >= beginAngle && angle <= endAngle;
@@ -104,4 +113,22 @@ public class Reader {
 //        }
 //        return if (r >= until) until.nextDown() else r
 //    }
+
+    private static class Metadata {
+        private ErrorCorrectionLevel errorCorrectionLevel;
+        private int dataSize;
+
+        Metadata(ErrorCorrectionLevel errorCorrectionLevel, int dataSize) {
+            this.errorCorrectionLevel = errorCorrectionLevel;
+            this.dataSize = dataSize;
+        }
+
+        public ErrorCorrectionLevel getErrorCorrectionLevel() {
+            return errorCorrectionLevel;
+        }
+
+        public int getDataSize() {
+            return dataSize;
+        }
+    }
 }
