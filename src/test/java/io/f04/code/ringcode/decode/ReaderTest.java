@@ -20,4 +20,17 @@ public class ReaderTest {
         byte[] data = reader.read(image, 140, 140);
         assertEquals("Hello, World!", new String(data, StandardCharsets.UTF_8));
     }
+
+    @Test
+    public void testProcessed() throws Exception {
+        Reader reader = new Reader();
+        BufferedImage image = ImageIO.read(new File("src/test/resources/sample-0-0-1-2.png"));
+        assertEquals(640, image.getHeight());
+        assertEquals(640, image.getWidth());
+        //reader.setTest(true);
+        reader.setRingWidth(16.7f);
+        reader.setSampleTimes(5);
+        byte[] data = reader.read(image, 320, 318);
+        assertEquals("Hello, World!", new String(data, StandardCharsets.UTF_8));
+    }
 }

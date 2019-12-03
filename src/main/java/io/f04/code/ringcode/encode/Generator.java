@@ -97,25 +97,47 @@ public class Generator {
     private void drawAnchors(Graphics2D gs, int imageSize) {
         gs.setColor(Color.BLACK);
 
-        int r1 = Constants.ANCHOR_WIDTH;
-        int w2 = (int)(r1 / 0.8f);
-        int w1 = (int)(r1 * 2 + w2 + w2 * 1.2f * 2);
+        final int r1 = Constants.ANCHOR_WIDTH;
+        final int w2 = (int)(r1 / 0.8f);
+        final int w1 = (int)(r1 * 2 + w2 + w2 * 1.2f * 2);
         gs.setStroke(new BasicStroke(r1));
 
-        int x = Constants.RING_WIDTH, y = Constants.RING_WIDTH;
+        final int side = (int)(Constants.RING_WIDTH * 2f);
+
+        int x = side, y = side;
         gs.draw(new Ellipse2D.Float(x, y, w1, w1));
         gs.fill(new Ellipse2D.Float(x + r1 + w2 * 1.2f, y + r1 + w2 * 1.2f, w2, w2));
 
-        x = imageSize - w1 - Constants.RING_WIDTH;
+        x = imageSize - w1 - side;
         gs.draw(new Ellipse2D.Float(x, y, w1, w1));
         gs.fill(new Ellipse2D.Float(x + r1 + w2 * 1.2f, y + r1 + w2 * 1.2f, w2, w2));
 
-        x = Constants.RING_WIDTH;
-        y = imageSize - w1 - Constants.RING_WIDTH;
+        x = side;
+        y = imageSize - w1 - side;
         gs.draw(new Ellipse2D.Float(x, y, w1, w1));
         gs.fill(new Ellipse2D.Float(x + r1 + w2 * 1.2f, y + r1 + w2 * 1.2f, w2, w2));
+
+        final int w0 = (int)(w1 * 1.8);
+        x = (imageSize - w1 - side) + w1 / 2 - w0 / 2;
+        y = x;
+        drawLogo(gs, x, y, w0);
 
         gs.setComposite(AlphaComposite.SrcAtop);
+    }
+
+    private void drawLogo(Graphics2D gs, int x, int y, int w) {
+        final String logo = "fc";
+
+        gs.setStroke(new BasicStroke(1));
+        gs.setColor(new Color(0x5dc151));
+
+        gs.fill(new Ellipse2D.Float(x, y, w, w));
+
+        gs.setColor(Color.WHITE);
+        gs.setFont(new Font("Source Han Sans SC Medium", Font.ITALIC, (int)(w * 0.8)));
+        FontMetrics metrics = gs.getFontMetrics(gs.getFont());
+        int fontW = metrics.stringWidth(logo);
+        gs.drawString(logo, x + (w - fontW) / 2, y + gs.getFont().getSize());
     }
 
     private void drawData(Graphics2D gs, int imageSize, int []angles, byte[] data) {

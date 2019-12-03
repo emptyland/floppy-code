@@ -6,7 +6,13 @@ import io.f04.code.ringcode.exceptions.BadDataSizeException;
 import io.f04.code.ringcode.exceptions.BadMetadataException;
 import io.f04.code.ringcode.utils.CodecUtil;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,15 +21,17 @@ import java.util.Random;
 
 public class Reader {
 
-    private int ringWidth = Constants.RING_WIDTH;
+    private float ringWidth = Constants.RING_WIDTH;
 
     private int sampleTimes = 5;
 
-    public int getRingWidth() {
+    private boolean test = false;
+
+    public float getRingWidth() {
         return ringWidth;
     }
 
-    public void setRingWidth(int ringWidth) {
+    public void setRingWidth(float ringWidth) {
         this.ringWidth = ringWidth;
     }
 
@@ -35,17 +43,25 @@ public class Reader {
         this.sampleTimes = sampleTimes;
     }
 
+    public boolean isTest() {
+        return test;
+    }
+
+    public void setTest(boolean test) {
+        this.test = test;
+    }
+
     // 25
-    public byte[] read(BufferedImage rawImage, int centerX, int centerY) throws BadMetadataException, BadDataSizeException {
+    public byte[] read(BufferedImage rawImage, int centerX, int centerY) throws BadMetadataException, BadDataSizeException, IOException {
         double angle = (2 * Math.PI) / 18;
-        int r = ringWidth * 4;
+        int r = (int)(ringWidth * 4);
 
         List<Boolean> bits = new ArrayList<>();
         Metadata metadata = readMetadata(rawImage, r, angle, centerX, centerY);
-        System.out.println("^^^^^^^^^^^^^^^^^^^^^^^");
+        //System.out.println("^^^^^^^^^^^^^^^^^^^^^^^");
         for (int i = 0; i < Constants.RING15 - 1; i++) {
             angle = (2 * Math.PI) / (360.0 / Constants.RING15_ANGLES[i]);
-            r = ringWidth * (4 + Constants.RING15 - i - 1);
+            r = (int)(ringWidth * (4 + Constants.RING15 - i - 1));
 
             for (int j = 0; j < 360 / Constants.RING15_ANGLES[i]; j++) {
                 bits.add(testSample(rawImage, r, j * angle, (j + 1) * angle, centerX, centerY));
@@ -56,22 +72,24 @@ public class Reader {
             code[i / 8] |= bits.get(i) ? (1 << (i % 8)) : 0;
         }
 
+        if (test) {
+            //ImageIO.read(new File("src/test/resources/sample-0-0-1-2.png"));
+            ImageIO.write(rawImage, "png", new File("src/test/resources/sample-0-t1.png"));
+        }
         Decoder decoder = new Decoder(metadata.getErrorCorrectionLevel());
         byte[] data = decoder.decode(code, CodecUtil.makeType2(Constants.RING15_MAX_BYTES), Constants.RING15_MAX_BYTES);
         return Arrays.copyOf(data, metadata.dataSize);
     }
 
-//    private void readRing(BufferedImage rawImage, int r, double angle, int centerX, int centerY, int limit, List<Boolean> bits) {
-//        for (int i = 0; i < limit; ++i) {
-//            bits.add(testSample(rawImage, r, i * angle, (i + 1) * angle, centerX, centerY));
-//        }
-//    }
-
-    private Metadata readMetadata(BufferedImage rawImage, int r, double angle, int centerX, int centerY) throws BadMetadataException {
+    private Metadata readMetadata(BufferedImage rawImage, int r, double angle, int centerX, int centerY) throws BadMetadataException, IOException {
         byte[] metadata = new byte[(18 + 7) / 8];
         for (int i = 0; i < 18; ++i) {
             boolean sample = testSample(rawImage, r, i * angle, (i + 1) * angle, centerX, centerY);
             metadata[i / 8] |= sample ? (1 << i % 8) : 0;
+        }
+        if (test) {
+            //ImageIO.read(new File("src/test/resources/sample-0-0-1-2.png"));
+            ImageIO.write(rawImage, "png", new File("src/test/resources/sample-0-t1.png"));
         }
         for (int i = 0; i < metadata.length - 1; i++) {
             metadata[i] ^= 0xaa;
@@ -92,18 +110,36 @@ public class Reader {
     }
 
     private boolean testSample(BufferedImage rawImage, int r, double beginAngle, double endAngle, int centerX, int centerY) {
+        Graphics2D gs = null;
+        if (test) {
+            gs = rawImage.createGraphics();
+            gs.setComposite(AlphaComposite.Src);
+            gs.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            gs.setStroke(new BasicStroke(1));
+            gs.setColor(Color.GREEN);
+            gs.draw(new Ellipse2D.Float(centerX - r, centerY - r, r * 2, r * 2));
+        }
+
         Random rand = new Random();
         int countOne = 0, countZero = 0;
         for (int i = 0; i < sampleTimes; i++) {
-            double t = r + 1 + rand.nextInt(ringWidth - 1);
+            double t = r + 1 + rand.nextInt((int)ringWidth - 1);
             //double t = r + 3;
             double angle = nextDouble(rand, beginAngle, endAngle);
             assert angle >= beginAngle && angle <= endAngle;
             int x = (int)(centerX + t * Math.cos(angle));
             int y = (int)(centerY - t * Math.sin(angle));
 
+            if (gs != null) {
+                gs.draw(new Line2D.Float(x-1, y, x+1, y));
+                gs.draw(new Line2D.Float(x, y-1, x, y+1));
+            }
+
+
             boolean one = rawImage.getRGB(x, y) != 0xffffffff;
-            System.out.println(String.format("(%s, %s) %s", x, y, one));
+            if (test) {
+                System.out.println(String.format("(%s, %s) %s", x, y, one));
+            }
 
             if (one) {
                 countOne++;
@@ -111,7 +147,12 @@ public class Reader {
                 countZero++;
             }
         }
-        System.out.println("---------------");
+        if (test) {
+            System.out.println("---------------");
+        }
+        if (gs != null) {
+            gs.dispose();
+        }
         return countOne > countZero;
     }
 
