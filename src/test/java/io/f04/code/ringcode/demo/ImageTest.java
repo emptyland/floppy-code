@@ -131,20 +131,6 @@ public class ImageTest {
         Imgproc.Canny(gray, gray, 112, 255);
         Imgcodecs.imwrite("src/test/resources/sample-0-a1.png", gray);
 
-//        Mat hierarchy = new Mat();
-        //Imgproc.HoughCircles(gray, hierarchy, Imgproc.HOUGH_GRADIENT, 1, 10,100, 35, 10, 30);
-        //
-//        Imgproc.HoughCircles(gray, hierarchy, Imgproc.HOUGH_GRADIENT, 1, 30,100, 30, 10, 30);
-//        for (int i = 0; i < hierarchy.cols(); i++) {
-//            double[] ds = hierarchy.get(0, i);
-//            Point center = new Point(ds[0], ds[1]);
-//            Imgproc.circle(srcAll, center, (int)ds[2], new Scalar(0, 255, 0), 3, 8, 0);
-//            System.out.println(Arrays.toString(ds));
-//        }
-//        Imgcodecs.imwrite("src/test/resources/sample-0-a2.png", srcAll);
-        //hierarchy.
-        //System.out.println(hierarchy.size());
-
         List<MatOfPoint> contours = new ArrayList<>();
         List<MatOfPoint> markContours = new ArrayList<>();
         Mat hierarchy = new Mat();
@@ -252,59 +238,28 @@ public class ImageTest {
     }
 
     @Test
-    public void testImage() throws Exception {
-        BufferedImage image = new BufferedImage(200, 200, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D gs = image.createGraphics();
-        gs.setComposite(AlphaComposite.Src);
-        gs.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        gs.setColor(Color.WHITE);
-        gs.fill(new Rectangle2D.Float(0.0f, 0.0f, 200.0f, 200.0f));
+    public void test3() throws Exception {
+        Mat src = Imgcodecs.imread("src/test/resources/sample-0.jpeg", 1);
+        int m = Core.getOptimalDFTSize(src.rows());
+        int n = Core.getOptimalDFTSize(src.cols());
+        Mat padding = new Mat();
 
-        gs.setColor(Color.BLACK);
-        gs.setStroke(new BasicStroke(3.0f));
-        gs.draw(new Ellipse2D.Float(5.0f, 5.0f, 20.0f, 20.0f));
-        gs.fill(new Ellipse2D.Float(10.0f, 10.0f, 11.0f, 11.0f));
-        gs.draw(new Ellipse2D.Float(175.0f, 5.0f, 20.0f, 20.0f));
-        gs.draw(new Ellipse2D.Float(5.0f, 175.0f, 20.0f, 20.0f));
-        gs.setComposite(AlphaComposite.SrcAtop);
+        Core.copyMakeBorder(src, padding, 0, m - src.rows(), 0,n - src.cols(), Core.BORDER_CONSTANT, new Scalar(0, 0, 0));
+        List<Mat> planes = new ArrayList<>();
+        Mat padding32 = new Mat();
+        padding.convertTo(padding32, CvType.CV_32F);
+        planes.add(padding32);
+        planes.add(Mat.zeros(padding.size(), CvType.CV_32F));
+        Mat complex = new Mat();
+        //merge(planes, 2, complexImg);
+        Core.merge(planes, complex);
+        //System.out.println(String.format("%s, %s", CvType.CV_32F, complex.type()));
 
-        //gs.color = Color.BLACK
-        drawRing(gs, 5, 5, 190, 5, new Color(0x03, 0xa9, 0xf4));
-        drawRing(gs, 10, 10, 180, 5, new Color(0x00, 0xdc, 0xb4));
-        drawRing(gs, 15, 15, 170, 5, new Color(0x00, 0x96, 0x88));
-        drawRing(gs, 20, 20, 160, 5, new Color(0x74, 0x3a, 0xb7));
-        drawRing(gs, 25, 25, 150, 5, new Color(0x3f, 0x51, 0xb5));
-        drawRing(gs, 30, 30, 140, 5, new Color(0x56, 0x77, 0xfc));
-        drawRing(gs, 35, 35, 130, 10, new Color(0x25, 0x9b, 0x24));
-        drawRing(gs, 40, 40, 120, 10, new Color(0x8b, 0xc3, 0x4a));
-        drawRing(gs, 45, 45, 110, 10, new Color(0x25, 0x9b, 0x24));
-        drawRing(gs, 50, 50, 100, 15, new Color(0x03, 0xa9, 0xf4));
-        drawRing(gs, 55, 55, 90, 15, new Color(0x00, 0xdc, 0xb4));
-        drawRing(gs, 60, 60, 80, 15, new Color(0x00, 0x96, 0x88));
-        drawRing(gs, 65, 65, 70, 20, new Color(0x74, 0x3a, 0xb7));
-        drawRing(gs, 70, 70, 60, 20, new Color(0x3f, 0x51, 0xb5));
-        drawRing(gs, 75, 75, 50, 20, new Color(0x56, 0x77, 0xfc));
+//        Mat dst = new Mat();
+//        complex.convertTo(dst, CvType.CV_32FC1);
+        Core.dft(complex, complex);
 
-        ImageIO.write(image, "png", new File("src/test/resources/1.png"));
-
-        System.out.println("bits: " + bits);
-    }
-
-    private void drawRing(Graphics2D gs, int x, int y, int size, int minAngle, Color color) {
-        gs.setColor(color);
-        int angle = 0;
-        while (angle < 360) {
-            int value = rand.nextInt(100);
-
-            if (value > 55) {
-                //println("value: $value $angle ${angle + minAngle}")
-                gs.fillArc(x, y, size, size, angle, minAngle);
-            }
-            angle += minAngle;
-            bits += 1;
-        }
-        gs.setColor(Color.WHITE);
-        gs.fill(new Ellipse2D.Float((x + 5), (x + 5), (size - 10), (size - 10)));
+        Imgcodecs.imwrite("src/test/resources/sample-0-ffi0.jpg", complex);
     }
 
     @Test

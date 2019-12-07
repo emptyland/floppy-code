@@ -21,11 +21,17 @@ import java.util.Random;
 
 public class Reader {
 
+    /** ring width */
     private float ringWidth = Constants.RING_WIDTH;
 
+    /** sample times */
     private int sampleTimes = 5;
 
+    /** test mode */
     private boolean test = false;
+
+    /** test mode output file name */
+    private String fileName;
 
     public float getRingWidth() {
         return ringWidth;
@@ -49,6 +55,14 @@ public class Reader {
 
     public void setTest(boolean test) {
         this.test = test;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     // 25

@@ -30,7 +30,7 @@ public class ReaderTest {
         //reader.setTest(true);
         reader.setRingWidth(16.7f);
         reader.setSampleTimes(5);
-        byte[] data = reader.read(image, 320, 318);
+        byte[] data = reader.read(image, 320, 320);
         assertEquals("Hello, World!", new String(data, StandardCharsets.UTF_8));
     }
 }

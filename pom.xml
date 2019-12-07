@@ -55,6 +55,14 @@
             <version>3.2.0-0</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.github.adedayo.intellij.sdk/annotations-java8 -->
+        <dependency>
+            <groupId>com.github.adedayo.intellij.sdk</groupId>
+            <artifactId>annotations-java8</artifactId>
+            <version>142.1</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>
