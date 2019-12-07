@@ -1,5 +1,6 @@
 package io.f04.code.ringcode.picture;
 
+import org.jetbrains.annotations.*;
 import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
@@ -31,14 +32,17 @@ public class Capturer {
 
         public PerspectiveResult() {}
 
+        @Nullable
         public Point[] getDstPoints() {
             return dstPoints;
         }
 
+        @Nullable
         public Mat getDst() {
             return dst;
         }
 
+        @Nullable
         public Mat getPerspection() {
             return perspection;
         }
@@ -67,9 +71,15 @@ public class Capturer {
         this.test = test;
     }
 
-    public List<CapturedImage> capture(File inputFile) throws IOException {
+    public File getInputFile() {
+        return inputFile;
+    }
+
+    @NotNull
+    public List<CapturedImage> capture(@NotNull File inputFile) throws IOException {
         List<CapturedImage> images = new ArrayList<>();
         this.inputFile = inputFile;
+        this.step = 0;
         Mat gray = prepare();
         List<MatOfPoint> marks = findContours(gray);
         List<Point[]> pointGroups = processMarkedContours(marks);
@@ -106,6 +116,7 @@ public class Capturer {
     }
 
 
+    @NotNull
     private PerspectiveResult perspective(Point[] threePoints) {
         if (test) {
             Mat srcWithLines = src.clone();
