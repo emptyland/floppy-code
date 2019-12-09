@@ -27,29 +27,7 @@ public class CapturerTest {
 
         CapturedImage image = images.get(0);
         assertNotNull(image);
-        assertEquals(422, (int)image.approximateWidth());
-
-        Reader reader = new Reader();
-        reader.setTest(true);
-
-        int w = image.getImage().getWidth() / 2;
-        reader.setRingWidth(image.approximateRingWidth());
-        reader.setSampleTimes(5);
-        reader.setFileName(capturer.getInputFile().toString());
-        byte[] data = reader.read(image.getImage(), w, w);
-        assertEquals("Hello, World!", new String(data, StandardCharsets.UTF_8));
-    }
-
-    @Test
-    public void testComplex1() throws Exception {
-        Capturer capturer = new Capturer();
-        //capturer.setTest(true);
-        List<CapturedImage> images = capturer.capture(new File("src/test/resources/sample-1.jpeg"));
-        assertEquals(1, images.size());
-
-        CapturedImage image = images.get(0);
-        assertNotNull(image);
-        assertEquals(540, (int)image.approximateWidth());
+        assertEquals(446, (int)image.approximateWidth());
 
         Reader reader = new Reader();
         //reader.setTest(true);
@@ -93,5 +71,27 @@ public class CapturerTest {
             }
         }
         System.out.println("ok: " + ok + " fail: " + fail);
+    }
+
+    @Test
+    public void testComplex3() throws Exception {
+        Capturer capturer = new Capturer();
+        //capturer.setTest(true);
+        List<CapturedImage> images = capturer.capture(new File("src/test/resources/sample-3.jpeg"));
+        assertEquals(1, images.size());
+
+        CapturedImage image = images.get(0);
+        assertNotNull(image);
+        assertEquals(422, (int)image.approximateWidth());
+
+        Reader reader = new Reader();
+        //reader.setTest(true);
+
+        int w = image.getImage().getWidth() / 2;
+        reader.setRingWidth(image.approximateRingWidth());
+        reader.setSampleTimes(23);
+        reader.setFileName(capturer.getInputFile().toString());
+        byte[] data = reader.read(image.getImage(), w, w);
+        assertEquals("Hello, World!", new String(data, StandardCharsets.UTF_8));
     }
 }

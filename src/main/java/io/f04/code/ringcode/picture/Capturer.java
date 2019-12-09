@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Capturer {
 
@@ -56,7 +58,7 @@ public class Capturer {
 
     private Mat src = null;
 
-    private Mat srcAll = null;
+    //private Mat srcAll = null;
 
     static {
         // Don't use System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -81,10 +83,11 @@ public class Capturer {
         this.inputFile = inputFile;
         this.step = 0;
         Mat gray = prepare();
-        List<MatOfPoint> marks = findContours(gray);
-        List<Point[]> pointGroups = processMarkedContours(marks);
+        List<MatOfPoint> aux = new ArrayList<>();
+        List<MatOfPoint> marks = findContours(gray, aux);
+        List<Point[]> pointGroups = processMarkedContours(marks, aux);
         for (Point[] points : pointGroups) {
-            PerspectiveResult result = perspective(points);
+            PerspectiveResult result = perspective(points, aux);
             if (result.getDstPoints() != null) {
                 double[] distance = new double[4];
                 distance[0] = computeDistance(result.getDstPoints()[0], result.getDstPoints()[1]);
@@ -102,9 +105,9 @@ public class Capturer {
     private Mat prepare() throws IOException {
         src = Imgcodecs.imread(inputFile.toString(), 1);
         if (src.empty()) {
-            throw new IOException("opencv can not open: " + inputFile);
+            throw new IOException("open-cv can not open: " + inputFile);
         }
-        srcAll = src.clone();
+        //srcAll = src.clone();
 
         Mat gray = new Mat();
         Imgproc.cvtColor(src, gray, Imgproc.COLOR_RGB2GRAY);
@@ -115,9 +118,8 @@ public class Capturer {
         return gray;
     }
 
-
     @NotNull
-    private PerspectiveResult perspective(Point[] threePoints) {
+    private PerspectiveResult perspective(Point[] threePoints, List<MatOfPoint> auxMarks) {
         if (test) {
             Mat srcWithLines = src.clone();
             Imgproc.line(srcWithLines, threePoints[0], threePoints[1], new Scalar(0, 0, 255), 2);
@@ -204,6 +206,15 @@ public class Capturer {
             Point temp = new Point(threePoints[1].x + threePoints[2].x - threePoints[0].x, threePoints[1].y + threePoints[2].y - threePoints[0].y);
             poly[2] = temp;
         }
+        if (!auxMarks.isEmpty()) {
+            Optional<Point> found = auxMarks.stream().filter((mark)->{
+                MatOfPoint2f mat2f = new MatOfPoint2f(mark.toArray());
+                RotatedRect rect = Imgproc.minAreaRect(mat2f);
+                return rect.boundingRect().contains(poly[2]);
+            }).map(Capturer::centerCal)
+                    .findFirst();
+            poly[2] = found.orElse(poly[2]);
+        }
         if (test) {
             Mat srcWithLines = src.clone();
             Imgproc.line(srcWithLines, poly[0], poly[1], new Scalar(0, 0, 255), 2);
@@ -222,7 +233,7 @@ public class Capturer {
 
         double maxAngle = Math.max(angle3, Math.max(angle1, angle2));
         if (maxAngle < 75 || maxAngle > 115) {
-            return null;
+            return new PerspectiveResult();
         }
 
         // do perspective the picture mat
@@ -257,7 +268,7 @@ public class Capturer {
         return output;
     }
 
-    private List<Point[]> processMarkedContours(List<MatOfPoint> marks) {
+    private List<Point[]> processMarkedContours(List<MatOfPoint> marks, List<MatOfPoint> auxMarks) {
         while (marks.size() > 3) {
             double minArea = Double.MAX_VALUE;
             int index = -1;
@@ -277,6 +288,16 @@ public class Capturer {
         if (marks.size() < 3) {
             return new ArrayList<>();
         }
+        double maxArea = marks.stream()
+                .map(Imgproc::contourArea)
+                .max(Double::compareTo)
+                .orElse(Double.MAX_VALUE);
+        List<MatOfPoint> aux = auxMarks.stream()
+                .filter((mark)->Imgproc.contourArea(mark) > maxArea)
+                .collect(Collectors.toList());
+        auxMarks.clear();
+        auxMarks.addAll(aux);
+
         List<Point[]> results = new ArrayList<>();
         for (int i = 0; i < marks.size() - 2; i++) {
             Point[] threePoints = new Point[3];
@@ -293,11 +314,13 @@ public class Capturer {
         return results;
     }
 
-    private List<MatOfPoint> findContours(Mat gray) {
+    private List<MatOfPoint> findContours(Mat gray, List<MatOfPoint> auxContours) {
         List<MatOfPoint> contours = new ArrayList<>();
         List<MatOfPoint> markContours = new ArrayList<>();
         Mat hierarchy = new Mat();
         Imgproc.findContours(gray, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+
+        //Point target = new Point(588, 834);
 
         for (int i = 0; i < contours.size(); i++) {
             MatOfPoint2f newMtx = new MatOfPoint2f(contours.get(i).toArray());
@@ -318,15 +341,22 @@ public class Capturer {
                     if (count >= 5) {
                         markContours.add(contours.get(i));
                     }
+                    if (count == 2) {
+                        auxContours.add(contours.get(i));
+                    }
                 }
             }
         }
 
         if (test) {
+            Mat marks = src.clone();
             for (int i = 0; i < markContours.size(); i++) {
-                Imgproc.drawContours(srcAll, markContours, i, new Scalar(0, 0, 255), -1);
+                Imgproc.drawContours(marks, markContours, i, new Scalar(0, 0, 255), -1);
             }
-            writeTestFileIfNeeded(srcAll);
+            for (int i = 0; i < auxContours.size(); i++) {
+                Imgproc.drawContours(marks, auxContours, i, new Scalar(0, 255, 0), -1);
+            }
+            writeTestFileIfNeeded(marks);
         }
         return markContours;
     }
@@ -335,7 +365,6 @@ public class Capturer {
         if (!test) {
             return;
         }
-        //System.out.println(inputFile);
         Imgcodecs.imwrite(inputFile.toString() + "-s" + step++ + ".png", dst);
     }
 
@@ -351,7 +380,7 @@ public class Capturer {
         threePoints[first] = threePoints[0];
         threePoints[0] = tmp;
 
-        int second = 0;
+        int second;
         if (threePoints[1].x > threePoints[0].x && threePoints[1].y < threePoints[2].y) {
             second = 1;
         } else {
