@@ -1,5 +1,6 @@
 package io.f04.code.ringcode.picture;
 
+import io.f04.code.ringcode.utils.OpenCVInitializer;
 import org.jetbrains.annotations.*;
 import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
@@ -61,8 +62,7 @@ public class Capturer {
     //private Mat srcAll = null;
 
     static {
-        // Don't use System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        nu.pattern.OpenCV.loadShared();
+        OpenCVInitializer.ensure();
     }
 
     public boolean isTest() {

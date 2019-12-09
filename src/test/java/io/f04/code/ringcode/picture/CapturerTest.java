@@ -11,12 +11,12 @@ import static org.junit.Assert.*;
 
 public class CapturerTest {
 
-    @Test
-    public void testSanity() throws Exception {
-        Capturer capturer = new Capturer();
-        capturer.setTest(true);
-        capturer.capture(new File("src/test/resources/sample-0.jpeg"));
-    }
+//    @Test
+//    public void testSanity() throws Exception {
+//        Capturer capturer = new Capturer();
+//        capturer.setTest(true);
+//        capturer.capture(new File("src/test/resources/sample-3.jpeg"));
+//    }
 
     @Test
     public void testComplex0() throws Exception {
