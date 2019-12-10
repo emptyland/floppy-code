@@ -26,7 +26,7 @@ public class RingCodeUtils {
                 .addOption("c", false, "🌈 Colored ring code picture. Require with -g.")
                 .addOption("f", true, "📄 Ring code picture format. Require with -g.")
                 .addOption("r", false, "📤 Read the raw ring code picture.")
-                .addOption("p", false, "📷 Read from ring code in photo.");
+                .addOption("p", false, "📷 Read ring code in photo.");
 
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd = parser.parse(options,args);
