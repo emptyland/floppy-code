@@ -123,10 +123,10 @@ and logo icon<y:LabelModel>
       <data key="d5"/>
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="263.0" width="265.0" x="278.0" y="239.0"/>
+          <y:Geometry height="268.0" width="267.0" x="276.0" y="237.0"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle color="#FF6600" raised="false" type="dashed" width="3.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="4.0" x="130.5" y="129.5">
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="bottom" visible="true" width="4.0" x="131.5" y="132.0">
             <y:LabelModel>
               <y:SmartNodeLabelModel distance="4.0"/>
             </y:LabelModel>
