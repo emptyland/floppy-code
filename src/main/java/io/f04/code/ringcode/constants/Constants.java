@@ -74,6 +74,11 @@ public interface Constants {
             add(new Color(0x8b, 0xc3, 0x4a));
         }
     };
+
+    Color LOGO_COLOR = new Color(0x5dc151);
+
+    String LOGO_TEXT = "fc";
+
     Map<Integer, RingProfile> RINGS_PROFILE = new HashMap<Integer, RingProfile>() {
         {
             put(RING15, new RingProfile(RING15_MAX_BYTES, RING15_IMAGE_SIZE, RING15_ANGLES));

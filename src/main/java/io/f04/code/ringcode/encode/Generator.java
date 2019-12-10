@@ -12,8 +12,8 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +31,8 @@ public class Generator {
         }
     };
 
+    private Color logoColor = Constants.LOGO_COLOR;
+
     public void setData(byte[] data) {
         Constants.RingProfile profile = Constants.RINGS_PROFILE.get(ringSize);
         if (profile == null || data.length > errorCorrectionLevel.computePayloadSize(profile.getMaxBytes())) {
@@ -39,8 +41,8 @@ public class Generator {
         this.data = data;
     }
 
-    public void setData(String data) throws UnsupportedEncodingException {
-        setData(data.getBytes("UTF-8"));
+    public void setData(String data) {
+        setData(data.getBytes(StandardCharsets.UTF_8));
     }
 
     public int getRingSize() {
@@ -65,6 +67,14 @@ public class Generator {
 
     public void setErrorCorrectionLevel(ErrorCorrectionLevel errorCorrectionLevel) {
         this.errorCorrectionLevel = errorCorrectionLevel;
+    }
+
+    public Color getLogoColor() {
+        return logoColor;
+    }
+
+    public void setLogoColor(Color logoColor) {
+        this.logoColor = logoColor;
     }
 
     public void toFile(File outFile, String format) throws IOException, BadDataSizeException {
@@ -125,10 +135,10 @@ public class Generator {
     }
 
     private void drawLogo(Graphics2D gs, int x, int y, int w) {
-        final String logo = "fc";
+        final String logo = Constants.LOGO_TEXT;
 
         gs.setStroke(new BasicStroke(1));
-        gs.setColor(new Color(0x5dc151));
+        gs.setColor(logoColor);
 
         gs.fill(new Ellipse2D.Float(x, y, w, w));
 
