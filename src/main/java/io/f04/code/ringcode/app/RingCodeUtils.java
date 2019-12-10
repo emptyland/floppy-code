@@ -3,6 +3,7 @@ package io.f04.code.ringcode.app;
 import io.f04.code.ringcode.constants.Constants;
 import io.f04.code.ringcode.decode.Reader;
 import io.f04.code.ringcode.encode.Generator;
+import io.f04.code.ringcode.enums.ErrorCorrectionLevel;
 import io.f04.code.ringcode.exceptions.BadDataSizeException;
 import io.f04.code.ringcode.exceptions.BadMetadataException;
 import io.f04.code.ringcode.picture.CapturedImage;
@@ -13,6 +14,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -22,6 +24,7 @@ public class RingCodeUtils {
         Options options = new Options();
         options.addOption("help", false, "😳 Help information.")
                 .addOption("test", false, "🛠 Debug mode.")
+                .addOption("level", true, "❗️ Error correction level(L/M/Q/H).")
                 .addOption("g", true, "🏞 Generate ring code picture.")
                 .addOption("c", false, "🌈 Colored ring code picture. Require with -g.")
                 .addOption("f", true, "📄 Ring code picture format. Require with -g.")
@@ -36,12 +39,13 @@ public class RingCodeUtils {
             return;
         }
         if (cmd.hasOption("g")) {
-            Generator generator = new Generator();
-            generator.setData(cmd.getOptionValue("g"));
-            if (cmd.hasOption("c")) {
-                generator.setRingColors(Constants.RING_COLORS);
+            try {
+                generate(cmd.hasOption("c"), cmd.getOptionValue("g"), cmd.getOptionValue("level"),
+                        cmd.getOptionValue("f"), cmd.getArgs()[0]);
+            } catch (Exception e) {
+                System.err.println("Generate picture fail!");
+                e.printStackTrace();
             }
-            generator.toFile(new File(cmd.getArgs()[0]), cmd.getOptionValue("f"));
             return;
         }
         if (cmd.hasOption("r")) {
@@ -69,6 +73,35 @@ public class RingCodeUtils {
     private static void usage(Options options) {
         HelpFormatter formatter = new HelpFormatter();
         formatter.printHelp( "java -jar ring-code-utils.jar [OPTION] <FILENAME>", options );
+    }
+
+    private static void generate(boolean colored, String data, String level, String format, String fileName)
+            throws IOException, BadDataSizeException {
+        Generator generator = new Generator();
+        generator.setData(data);
+        if (colored) {
+            generator.setRingColors(Constants.RING_COLORS);
+        }
+        switch (level == null ? "" : level) {
+            case "L":
+                generator.setErrorCorrectionLevel(ErrorCorrectionLevel.L);
+                break;
+            case "M":
+                generator.setErrorCorrectionLevel(ErrorCorrectionLevel.M);
+                break;
+            case "Q":
+                generator.setErrorCorrectionLevel(ErrorCorrectionLevel.Q);
+                break;
+            case "H":
+                generator.setErrorCorrectionLevel(ErrorCorrectionLevel.H);
+                break;
+            case "":
+                break; // ignore
+            default:
+                throw new IllegalArgumentException("Unknown Error Correction Level: " + level);
+
+        }
+        generator.toFile(new File(fileName), format);
     }
 
     private static void readRawPicture(boolean shouldDebug, String fileName) throws IOException,

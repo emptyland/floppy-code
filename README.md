@@ -25,13 +25,14 @@ $ java -jar target/ring-code-utils-jar-with-dependencies.jar
 
 ```
 usage: java -jar ring-code-utils.jar [OPTION] <FILENAME>
- -c         🌈 Colored ring code picture. Require with -g.
- -f <arg>   📄 Ring code picture format. Require with -g.
- -g <arg>   🏞 Generate ring code picture.
- -help      😳 Help information.
- -p         📷 Read ring code in photo.
- -r         📤 Read the raw ring code picture.
- -test      🛠 Debug mode.
+ -c             🌈 Colored ring code picture. Require with -g.
+ -f <arg>       📄 Ring code picture format. Require with -g.
+ -g <arg>       🏞 Generate ring code picture.
+ -help          😳 Help information.
+ -level <arg>   ❗️ Error correction level(L/M/Q/H).
+ -p             📷 Read ring code in photo.
+ -r             📤 Read the raw ring code picture.
+ -test          🛠 Debug mode.
 ```
 
 Generate a Ring Code picture: Using `png` picture file format, with message `你好，世界！` and output file is `HelloWorld.png`

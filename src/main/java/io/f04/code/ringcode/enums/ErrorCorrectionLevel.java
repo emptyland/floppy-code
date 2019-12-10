@@ -3,7 +3,7 @@ package io.f04.code.ringcode.enums;
 public enum ErrorCorrectionLevel {
     L(2, 1),
     M(2, 1),
-    Q(3, 1),
+    Q(2, 2),
     H(2, 2);
 
     ErrorCorrectionLevel(int dataShardCount, int parityShardCount) {
