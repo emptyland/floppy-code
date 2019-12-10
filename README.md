@@ -59,8 +59,12 @@ $ java -jar target/ring-code-utils-jar-with-dependencies.jar -p sample-photo.jpe
 $ 
 ```
 
-## Design
+## Implement
 
 ### Ring Code Structure
 
 ![Ring Code Design](docs/design.jpg)
+
+### How to get message from photo with Ring Code
+
+![Ring Code Design](docs/reading-process.jpg)
