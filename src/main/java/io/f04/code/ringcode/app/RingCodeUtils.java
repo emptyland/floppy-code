@@ -20,20 +20,19 @@ public class RingCodeUtils {
 
     public static void main(String[] args) throws Exception {
         Options options = new Options();
-        options.addOption("help", false, "Help information.")
-                .addOption("test", false, "Debug mode.")
-                .addOption("g", true, "Generate ring code picture.")
-                .addOption("c", false, "Colored ring code picture. Require with -g")
-                .addOption("f", true, "Ring code picture format. Require with -g")
-                .addOption("r", false, "Read the raw ring code picture.")
-                .addOption("p", false, "Process ring code photo.");
+        options.addOption("help", false, "😳 Help information.")
+                .addOption("test", false, "🛠 Debug mode.")
+                .addOption("g", true, "🏞 Generate ring code picture.")
+                .addOption("c", false, "🌈 Colored ring code picture. Require with -g.")
+                .addOption("f", true, "📄 Ring code picture format. Require with -g.")
+                .addOption("r", false, "📤 Read the raw ring code picture.")
+                .addOption("p", false, "📷 Read from ring code in photo.");
 
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd = parser.parse(options,args);
 
         if (cmd.hasOption("help")) {
-            HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp( "java RingCodeUtils.jar [OPTION] <FILENAME>", options );
+            usage(options);
             return;
         }
         if (cmd.hasOption("g")) {
@@ -64,8 +63,12 @@ public class RingCodeUtils {
             return;
         }
 
+        usage(options);
+    }
+
+    private static void usage(Options options) {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp( "java RingCodeUtils.jar [OPTION] <FILENAME>", options );
+        formatter.printHelp( "java -jar ring-code-utils.jar [OPTION] <FILENAME>", options );
     }
 
     private static void readRawPicture(boolean shouldDebug, String fileName) throws IOException,
