@@ -51,7 +51,7 @@ Named `sample-photo.jpeg`
 
 ![Ring Code in photo](src/test/resources/sample-4.jpeg)
 
-### Read message from Ring Code ptoto 
+### Read message from Ring Code photo 
 
 ```bash
 $ java -jar target/ring-code-utils-jar-with-dependencies.jar -p sample-photo.jpeg
