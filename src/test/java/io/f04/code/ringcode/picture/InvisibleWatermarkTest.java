@@ -17,7 +17,7 @@ public class InvisibleWatermarkTest {
         Mat src = Imgcodecs.imread("src/test/resources/sample-10.jpeg", 1);
         assertFalse(src.empty());
 
-        Mat dst = InvisibleWatermark.addWatermarkWithText(src, "youqian");
+        Mat dst = InvisibleWatermark.addWatermarkWithText(src, "TEST: Watermark");
         Imgcodecs.imwrite("src/test/resources/sample-10-mark.png", dst);
 
         dst = InvisibleWatermark.getWatermark(dst);

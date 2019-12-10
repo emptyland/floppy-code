@@ -161,7 +161,7 @@ public class Generator {
         for (int i = 0; i < metadata.length; i++) {
             metadata[i] ^= 0xaa;
         }
-        System.out.println(Arrays.toString(metadata));
+        //System.out.println(Arrays.toString(metadata));
         Color color = ringColors.get((ringSize - 1) % ringColors.size());
         drawRing(gs, position, position, size, minAngle, color, metadata, 0);
     }

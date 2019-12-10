@@ -255,7 +255,7 @@ public class Capturer {
 
     private Mat cutTarget(Mat dst, Point[] fourPoints, double[] distance) {
         double r = distance[0];
-        System.out.println(Arrays.toString(distance));
+        //System.out.println(Arrays.toString(distance));
         Rect roiArea = new Rect((int)fourPoints[0].x - 50, (int)fourPoints[0].y - 50, (int)r + 100, (int)r + 100);
         Mat dstRoi = new Mat(dst, roiArea);
 
