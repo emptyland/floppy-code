@@ -4,7 +4,7 @@
 ![Colored Ring Code](src/test/resources/3.png)
 ![Raw Ring Code](src/test/resources/HelloWorld.png)
 
-Yet another QR code.
+Yet another matrix barcode (or two-dimensional barcode).
 
 ## How to generate Ring Code picture
 
