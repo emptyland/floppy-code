@@ -2,7 +2,7 @@
 
 ![Raw Ring Code](src/test/resources/4.png)
 ![Colored Ring Code](src/test/resources/3.png)
-![Raw Ring Code](src/test/resources/HelloWorld.png)
+![Raw Ring Code](src/test/resources/5.png)
 
 Yet another matrix barcode (or two-dimensional barcode).
 
