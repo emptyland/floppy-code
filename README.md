@@ -58,3 +58,8 @@ $ java -jar target/ring-code-utils-jar-with-dependencies.jar -p sample-photo.jpe
 $ 
 ```
 
+## Design
+
+### Ring Code Structure
+
+![Ring Code Design](docs/design.jpg)
