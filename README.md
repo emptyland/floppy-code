@@ -45,13 +45,13 @@ Generated picture should like this:
 
 ## How to get message from Ring Code picture
 
-### Take a photo with Ring Code picture
+### Take a photo contains Ring Code picture
 
 Named `sample-photo.jpeg`
 
 ![Ring Code in photo](src/test/resources/sample-4.jpeg)
 
-### Read message from ptoto with Ring Code
+### Read message from Ring Code ptoto 
 
 ```bash
 $ java -jar target/ring-code-utils-jar-with-dependencies.jar -p sample-photo.jpeg
@@ -65,6 +65,6 @@ $
 
 ![Ring Code Design](docs/design.jpg)
 
-### How to get message from photo with Ring Code
+### How to get message from Ring Code photo
 
 ![Ring Code Design](docs/reading-process.jpg)
