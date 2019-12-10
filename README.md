@@ -33,7 +33,7 @@ usage: java -jar ring-code-utils.jar [OPTION] <FILENAME>
  -test      🛠 Debug mode.
 ```
 
-Generate a Ring Code picture: Using `png` picture file format, with message `你好，世界！` and to file `HelloWorld.png`
+Generate a Ring Code picture: Using `png` picture file format, with message `你好，世界！` and output file is `HelloWorld.png`
 
 ```bash
 $ java -jar target/ring-code-utils-jar-with-dependencies.jar -g "你好，世界！" -fpng HelloWorld.png
@@ -41,3 +41,20 @@ $ java -jar target/ring-code-utils-jar-with-dependencies.jar -g "你好，世界
 Generated picture should like this:
 
 ![Raw Ring Code](src/test/resources/HelloWorld.png)
+
+## How to get message from Ring Code picture
+
+### Take a photo with Ring Code picture
+
+Named `sample-photo.jpeg`
+
+![Ring Code in photo](src/test/resources/sample-4.jpeg)
+
+### Read message from ptoto with Ring Code
+
+```bash
+$ java -jar target/ring-code-utils-jar-with-dependencies.jar -p sample-photo.jpeg
+你好，世界！
+$ 
+```
+
