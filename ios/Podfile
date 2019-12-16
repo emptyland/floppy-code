@@ -1,0 +1,5 @@
+platform :ios, '13.1'
+
+target 'ringcode' do
+  pod 'OpenCV2', '~> 4.1.0'
+end
