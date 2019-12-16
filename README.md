@@ -1,8 +1,8 @@
 # Floppy Code
 
-![Raw Ring Code](src/test/resources/4.png)
-![Colored Ring Code](src/test/resources/3.png)
-![Raw Ring Code](src/test/resources/5.png)
+![Raw Ring Code](java/src/test/resources/4.png)
+![Colored Ring Code](java/src/test/resources/3.png)
+![Raw Ring Code](java/src/test/resources/5.png)
 
 Yet another matrix barcode (or two-dimensional barcode).
 
@@ -42,7 +42,7 @@ $ java -jar target/ring-code-utils-jar-with-dependencies.jar -g "你好，世界
 ```
 Generated picture should like this:
 
-![Raw Ring Code](src/test/resources/HelloWorld.png)
+![Raw Ring Code](java/src/test/resources/HelloWorld.png)
 
 ## How to get message from Ring Code picture
 
@@ -50,7 +50,7 @@ Generated picture should like this:
 
 Named `sample-photo.jpeg`
 
-![Ring Code in photo](src/test/resources/sample-4.jpeg)
+![Ring Code in photo](java/src/test/resources/sample-4.jpeg)
 
 ### Read message from Ring Code photo 
 
