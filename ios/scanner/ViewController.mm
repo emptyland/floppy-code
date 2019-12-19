@@ -11,11 +11,12 @@
 #import "ViewController.h"
 #import "ResultViewController.h"
 
-@interface ViewController ()
+@interface ViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 @property (strong, nonatomic) CvVideoCamera *videoCamera;
 @property (strong, nonatomic) VideoCameraDelegate *videoCameraDelegate;
 @property (weak, nonatomic) IBOutlet UIView *cameraView;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *startStopCameraBarButtonItem;
+@property (strong, nonatomic) NSMutableArray *model;
 @end
 
 @implementation ViewController
@@ -23,6 +24,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.model = [[NSMutableArray alloc] init];
     self.videoCameraDelegate = [[VideoCameraDelegate alloc] initWithViewController:self];
     self.videoCamera = [[CvVideoCamera alloc] initWithParentView:self.cameraView];
     self.videoCamera.defaultAVCaptureDevicePosition = AVCaptureDevicePositionBack;
@@ -44,15 +46,35 @@
     }
 }
 
-- (void)processorDidScanDone: (NSString *)content {
-    [self stopCamera];
-    
-    NSArray *data = [[NSArray alloc] initWithObjects:content, @"Last", nil];
+- (IBAction)onOpenResultView:(id)sender {
+    if (self.videoCamera.running) {
+        [self stopCamera];
+    }
+
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     UIViewController *vc = [sb instantiateViewControllerWithIdentifier:@"ResultViewController"
                                                                creator: ^(NSCoder *coder) {
-        return [[ResultViewController alloc] initWithData:data coder:coder]; }];
-    //[(ResultViewController *)vc pushResult:content];
+        return [[ResultViewController alloc] initWithData:self.model coder:coder]; }];
+    [self presentViewController:vc animated:YES completion:nil];
+}
+
+- (IBAction)onSelectPhotosAlbum:(id)sender {
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    picker.modalPresentationStyle = UIModalPresentationFullScreen;
+    picker.delegate = self;
+    picker.allowsEditing = NO;
+    [self presentViewController:picker animated:YES completion:nil];
+}
+
+- (void)processorDidScanDone: (NSString *)content {
+    [self stopCamera];
+    [self.model addObject:content];
+    
+    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    UIViewController *vc = [sb instantiateViewControllerWithIdentifier:@"ResultViewController"
+                                                               creator: ^(NSCoder *coder) {
+        return [[ResultViewController alloc] initWithData:self.model coder:coder]; }];
     [self presentViewController:vc animated:YES completion:nil];
 }
 
@@ -88,6 +110,26 @@
         [self.cameraView.layer addAnimation:animation forKey:@"stopAnimation"];
         self.startStopCameraBarButtonItem.image = [UIImage systemImageNamed:@"camera.fill"];
     }
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> *)info {
+    NSString *type = [info objectForKey:UIImagePickerControllerMediaType];
+    
+    if ([type isEqualToString:@"public.image"]) {
+        NSString *key = nil;
+        if (picker.allowsEditing) {
+            key = UIImagePickerControllerEditedImage;
+        } else {
+            key = UIImagePickerControllerOriginalImage;
+        }
+        UIImage *image = [info objectForKey:key];
+        [self.videoCameraDelegate processNativeImage:image];
+    }
+    [picker dismissViewControllerAnimated:YES completion:^{}];
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    [picker dismissViewControllerAnimated:YES completion:^{}];
 }
 
 @end

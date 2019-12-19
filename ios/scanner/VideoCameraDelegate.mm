@@ -6,6 +6,7 @@
 //  Copyright © 2019 Niko. All rights reserved.
 //
 
+#import <opencv2/imgcodecs/ios.h>
 #import "VideoCameraDelegate.h"
 
 @interface VideoCameraDelegate ()
@@ -34,6 +35,14 @@
         });
     }
     NSLog(@"capture! %d", self->ticks);
+}
+
+- (void)processNativeImage:(UIImage *)image {
+    cv::Mat mat;
+    UIImageToMat(image, mat);
+    self->ticks++;
+    
+    NSLog(@"process! %d", self->ticks);
 }
 
 @end

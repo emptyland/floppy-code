@@ -18,6 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (VideoCameraDelegate *)initWithViewController: (ViewController *)owner;
 - (void)reset;
 - (void)processImage:(cv::Mat&)image;
+- (void)processNativeImage:(UIImage *)image;
 @end
 
 NS_ASSUME_NONNULL_END
