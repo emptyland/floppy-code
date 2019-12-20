@@ -8,6 +8,7 @@
 
 #import <opencv2/imgcodecs/ios.h>
 #import "VideoCameraDelegate.h"
+#import "ring-code.h"
 
 @interface VideoCameraDelegate ()
 @property (weak, nonatomic) ViewController *owner;
@@ -42,6 +43,9 @@
     UIImageToMat(image, mat);
     self->ticks++;
     
+    std::vector<cv::Mat> debug_progress;
+    std::string err;
+    CaptureRingCodePhoto(mat, &debug_progress, &err);
     NSLog(@"process! %d", self->ticks);
 }
 

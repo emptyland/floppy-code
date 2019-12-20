@@ -402,6 +402,8 @@ public class Capturer {
     }
 
     private static Point centerCal(MatOfPoint matOfPoint){
+//        int cols = matOfPoint.cols(), rows = matOfPoint.rows();
+//        System.out.println("cols:" + cols + " rows:" + rows);
         MatOfPoint2f mat2f = new MatOfPoint2f( matOfPoint.toArray() );
         RotatedRect rect = Imgproc.minAreaRect( mat2f );
         Point[] vertices = new Point[4];
