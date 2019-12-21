@@ -16,7 +16,8 @@
 @property (strong, nonatomic) VideoCameraDelegate *videoCameraDelegate;
 @property (weak, nonatomic) IBOutlet UIView *cameraView;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *startStopCameraBarButtonItem;
-@property (strong, nonatomic) NSMutableArray *model;
+@property (strong, nonatomic) NSMutableArray *contentModel;
+@property (strong, nonatomic) NSArray *progressImagesModel;
 @end
 
 @implementation ViewController
@@ -24,7 +25,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.model = [[NSMutableArray alloc] init];
+    self.contentModel = [[NSMutableArray alloc] init];
+    self.progressImagesModel = [[NSArray alloc] init];
     self.videoCameraDelegate = [[VideoCameraDelegate alloc] initWithViewController:self];
     self.videoCamera = [[CvVideoCamera alloc] initWithParentView:self.cameraView];
     self.videoCamera.defaultAVCaptureDevicePosition = AVCaptureDevicePositionBack;
@@ -54,7 +56,7 @@
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     UIViewController *vc = [sb instantiateViewControllerWithIdentifier:@"ResultViewController"
                                                                creator: ^(NSCoder *coder) {
-        return [[ResultViewController alloc] initWithData:self.model coder:coder]; }];
+        return [[ResultViewController alloc] initWithData:self.contentModel coder:coder]; }];
     [self presentViewController:vc animated:YES completion:nil];
 }
 
@@ -67,14 +69,17 @@
     [self presentViewController:picker animated:YES completion:nil];
 }
 
-- (void)processorDidScanDone: (NSString *)content {
+- (void)processorDidScanDone: (NSString *)content progressImages: (NSArray *)images {
     [self stopCamera];
-    [self.model addObject:content];
+    [self.contentModel addObject:content];
+    if (images != nil) {
+        self.progressImagesModel = images;
+    }
     
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     UIViewController *vc = [sb instantiateViewControllerWithIdentifier:@"ResultViewController"
                                                                creator: ^(NSCoder *coder) {
-        return [[ResultViewController alloc] initWithData:self.model coder:coder]; }];
+        return [[ResultViewController alloc] initWithData:self.contentModel coder:coder]; }];
     [self presentViewController:vc animated:YES completion:nil];
 }
 

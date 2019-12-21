@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface ViewController : UIViewController
-- (void)processorDidScanDone: (NSString *)content;
+- (void)processorDidScanDone: (NSString *)content progressImages: (NSArray *)images;
 @end
 

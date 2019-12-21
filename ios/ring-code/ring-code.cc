@@ -119,7 +119,6 @@ std::shared_ptr<CapturedImage> Capturer::Capture() {
                 ComputeDistance(result->dst_points()[2], result->dst_points()[3]),
                 ComputeDistance(result->dst_points()[3], result->dst_points()[0]),
             };
-            (void)dist;
             
             cv::Mat dst = CutTarge(result->dst(), result->dst_points(), dist);
             return std::make_shared<CapturedImage>(dist, new cv::Mat(dst));
@@ -224,7 +223,146 @@ int Capturer::ProcessMarkedContours(std::vector<cv::Mat_<cv::Point>> *marks,
 PerspectiveResult *Capturer::Perspective(const cv::Point three_points[3],
                                          const std::vector<cv::Mat_<cv::Point>> &aux_marks) {
     // TODO:
-    return nullptr;
+    if (debug()) {
+        cv::Mat src_with_lines(src_.clone());
+        cv::line(src_with_lines, three_points[0], three_points[1], cv::Scalar{0, 0, 255}, 2);
+        cv::line(src_with_lines, three_points[1], three_points[2], cv::Scalar{0, 0, 255}, 2);
+        cv::line(src_with_lines, three_points[2], three_points[0], cv::Scalar{0, 0, 255}, 2);
+        AppendDebugProgressIfNeeded(src_with_lines);
+    }
+    
+    double ca[2] = {0}, cb[2] = {0};
+    ca[0] = three_points[1].x - three_points[0].x;
+    ca[1] = three_points[1].y - three_points[0].y;
+    cb[0] = three_points[2].x - three_points[0].x;
+    cb[1] = three_points[2].y - three_points[0].y;
+    
+    const double angle1 = ComputeAngle(ca, cb);
+    if (isnan(angle1)) {
+        return nullptr;
+    }
+    double ccw1;
+    if (ca[0] * cb[1] - ca[1] * cb[0] > 0) {
+        ccw1 = 0;
+    } else {
+        ccw1 = 1;
+    }
+
+    ca[0] = three_points[0].x - three_points[1].x;
+    ca[1] = three_points[0].y - three_points[1].y;
+    cb[0] = three_points[2].x - three_points[1].x;
+    cb[1] = three_points[2].y - three_points[1].y;
+    const double angle2 = ComputeAngle(ca, cb);
+    if (isnan(angle2)) {
+        return nullptr;
+    }
+    double ccw2;
+    if (ca[0] * cb[1] - ca[1] * cb[0] > 0) {
+        ccw2 = 0;
+    } else {
+        ccw2 = 1;
+    }
+
+    ca[0] = three_points[1].x - three_points[2].x;
+    ca[1] = three_points[1].y - three_points[2].y;
+    cb[0] = three_points[0].x - three_points[2].x;
+    cb[1] = three_points[0].y - three_points[2].y;
+    const double angle3 = ComputeAngle(ca, cb);
+    if (isnan(angle3)) {
+        return nullptr;
+    }
+    int ccw3;
+    if (ca[0] * cb[1] - ca[1] * cb[0] > 0) {
+        ccw3 = 0;
+    } else {
+        ccw3 = 1;
+    }
+
+    std::vector<cv::Point> poly(4);
+    if (angle3 > angle2 && angle3 > angle1) {
+        if (ccw3 == 1) {
+            poly[1] = three_points[1];
+            poly[3] = three_points[0];
+        } else {
+            poly[1] = three_points[0];
+            poly[3] = three_points[1];
+        }
+        poly[0] = three_points[2];
+        cv::Point temp{three_points[0].x + three_points[1].x - three_points[2].x,
+                       three_points[0].y + three_points[1].y - three_points[2].y};
+        poly[2] = temp;
+    } else if (angle2 > angle1 && angle2 > angle3) {
+        if (ccw2 == 1) {
+            poly[1] = three_points[0];
+            poly[3] = three_points[2];
+        } else {
+            poly[1] = three_points[2];
+            poly[3] = three_points[0];
+        }
+        poly[0] = three_points[1];
+        cv::Point temp{three_points[0].x + three_points[2].x - three_points[1].x,
+                       three_points[0].y + three_points[2].y - three_points[1].y};
+        poly[2] = temp;
+    } else if (angle1 > angle2 && angle1 > angle3) {
+        if (ccw1 == 1) {
+            poly[1] = three_points[1];
+            poly[3] = three_points[2];
+        } else {
+            poly[1] = three_points[2];
+            poly[3] = three_points[1];
+        }
+        poly[0] = three_points[0];
+        cv::Point temp{three_points[1].x + three_points[2].x - three_points[0].x,
+                       three_points[1].y + three_points[2].y - three_points[0].y};
+        poly[2] = temp;
+    }
+    const double max_angle = std::max(angle1, std::max(angle2, angle3));
+    if (max_angle < 75 || max_angle > 115) {
+        return nullptr;
+    }
+
+    if (!aux_marks.empty()) {
+        for (const auto &mark : aux_marks) {
+            cv::Mat_<cv::Point2f> mat2f(mark);
+            cv::RotatedRect rect = cv::minAreaRect(mat2f);
+            if (rect.boundingRect().contains(poly[2])) {
+                poly[2] = CenterCal(mark);
+                break;
+            }
+        }
+    }
+    
+    if (debug()) {
+        cv::Mat src_with_lines(src_.clone());
+        cv::line(src_with_lines, poly[0], poly[1], cv::Scalar{0, 0, 255}, 2);
+        cv::line(src_with_lines, poly[1], poly[2], cv::Scalar{0, 0, 255}, 2);
+        cv::line(src_with_lines, poly[2], poly[3], cv::Scalar{0, 0, 255}, 2);
+        cv::line(src_with_lines, poly[3], poly[1], cv::Scalar{0, 0, 255}, 2);
+        AppendDebugProgressIfNeeded(src_with_lines);
+    }
+    
+    int k = src_.cols / 4;
+    std::vector<cv::Point> trans(4);
+    trans[0] = {k, k};
+    trans[1] = {k, k * 2 + k};
+    trans[2] = {k * 2 + k, k * 2 + k};
+    trans[3] = {k * 2 + k, k};
+
+    cv::Mat poly_mat, trans_mat;
+    cv::Mat(poly).convertTo(poly_mat, CV_32F);
+    cv::Mat(trans).convertTo(trans_mat, CV_32F);
+    cv::Mat perspective_mat = cv::getPerspectiveTransform(poly_mat, trans_mat);
+    cv::Mat dst;
+    cv::warpPerspective(src_, dst, perspective_mat, src_.size(), cv::INTER_LINEAR);
+    AppendDebugProgressIfNeeded(dst);
+    
+    cv::Mat four_points_src;
+    cv::Mat(poly).convertTo(four_points_src, CV_32F);
+    cv::Mat four_points_dst;
+    cv::perspectiveTransform(four_points_src, four_points_dst, perspective_mat);
+    
+    auto four_points = static_cast<std::vector<cv::Point>>(four_points_dst);
+    return new PerspectiveResult(four_points.data(), dst, perspective_mat);
 }
 
 cv::Point Capturer::CenterCal(const cv::Mat_<cv::Point> &mat_of_point) {
@@ -258,6 +396,24 @@ void Capturer::OrderThreePointers(cv::Point three_points[3]) {
 
 } // namespace ring
 
+
+double CapturedImage::ApproximateWidth() const {
+    double w = r_[0];
+    int c = 1;
+    for (int i = 1; i < 4; i++) {
+        if (r_[i] == w) {
+            c++;
+        }
+    }
+    if (c == 4) {
+        return r<0>();
+    }
+    w = 0;
+    for (int i = 0; i < 4; i++) {
+        w += r_[i];
+    }
+    return w / 4.0;
+}
 
 CapturedImage::~CapturedImage() {
 }

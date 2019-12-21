@@ -17,6 +17,15 @@ public:
         memcpy(r_, r, sizeof(r_));
     }
     ~CapturedImage();
+
+    template<int N> inline double r() const {
+        static_assert(N >= 0 && N < 4, "out of \'r\' rang.");
+        return r_[N];
+    }
+    
+    double ApproximateWidth() const;
+    
+    double ApproximateRingWidth() const { return ApproximateWidth() / 32.33f; }
     
     const cv::Mat &image() const { return *image_; }
 
