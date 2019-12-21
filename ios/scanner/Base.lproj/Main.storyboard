@@ -116,6 +116,42 @@
             </objects>
             <point key="canvasLocation" x="928.79999999999995" y="120.98950524737631"/>
         </scene>
+        <!--Progress Images View Controller-->
+        <scene sceneID="IwE-Ep-nnE">
+            <objects>
+                <viewController storyboardIdentifier="ProgressImagesViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="muJ-65-okT" customClass="ProgressImagesViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="NBq-WV-S7E">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="s4L-IB-qmq">
+                                <rect key="frame" x="0.0" y="33" width="375" height="547"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="17w-f0-I7G">
+                                <rect key="frame" x="122" y="588" width="131" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <segments>
+                                    <segment title="First"/>
+                                    <segment title="Second"/>
+                                </segments>
+                                <connections>
+                                    <action selector="didSegmentChanged:" destination="muJ-65-okT" eventType="valueChanged" id="ovA-LC-zq2"/>
+                                </connections>
+                            </segmentedControl>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="ltg-gq-0SM"/>
+                    </view>
+                    <connections>
+                        <outlet property="imagesSegment" destination="17w-f0-I7G" id="GYo-2B-CGA"/>
+                        <outlet property="progressImageView" destination="s4L-IB-qmq" id="qHR-dp-OT9"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="TbH-IJ-kkl" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-676" y="120.98950524737631"/>
+        </scene>
     </scenes>
     <resources>
         <image name="camera.fill" catalog="system" width="64" height="48"/>

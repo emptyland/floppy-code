@@ -28,14 +28,21 @@
 }
 
 - (void)processImage:(cv::Mat&)image {
-    
-    if (self->ticks++ >= 100) {
+    std::vector<cv::Mat> debug_progress;
+    std::string err;
+    std::shared_ptr<CapturedImage> captured(CaptureRingCodePhoto(image, &debug_progress, &err));
+    if (captured) {
+        NSMutableArray *images = [[NSMutableArray alloc] initWithCapacity:debug_progress.size()];
+        for (size_t i = 0; i < debug_progress.size(); i++) {
+            [images setObject:MatToUIImage(debug_progress[i]) atIndexedSubscript:i];
+        }
+        
         dispatch_queue_t mainQueue = dispatch_get_main_queue();
         dispatch_async(mainQueue, ^{
-            [self.owner processorDidScanDone:@"OK" progressImages:nil];
+            [self.owner processorDidScanDone:@"OK" progressImages:images];
         });
     }
-    NSLog(@"capture! %d", self->ticks);
+    NSLog(@"capture! %d", self->ticks++);
 }
 
 - (void)processNativeImage:(UIImage *)image {
@@ -52,12 +59,8 @@
         [images setObject:MatToUIImage(debug_progress[i]) atIndexedSubscript:i];
     }
 
-    NSLog(@"process! %d", self->ticks);
+    //NSLog(@"process! %d", self->ticks);
     [self.owner processorDidScanDone:@"Single" progressImages:images];
-//    dispatch_queue_t mainQueue = dispatch_get_main_queue();
-//    dispatch_async(mainQueue, ^{
-//        [self.owner processorDidScanDone:@"Single" progressImages:images];
-//    });
 }
 
 @end

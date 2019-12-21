@@ -27,15 +27,23 @@ public class GeneratorTest {
         g.toFile(new File("src/test/resources/3.png"), "png");
     }
 
+//    @Test
+//    public void testRing31() throws Exception {
+//        Generator g = new Generator();
+//        g.setRingSize(Constants.RING31);
+//        g.setRingColors(Constants.RING_COLORS);
+//        byte[] data = new byte[Constants.RING31_MAX_BYTES];
+//        rand.nextBytes(data);
+//        g.setData(data);
+//        g.toFile(new File("src/test/resources/4.png"), "png");
+//    }
+
     @Test
-    public void testRing31() throws Exception {
+    public void testNewRing() throws Exception {
         Generator g = new Generator();
-        g.setRingSize(Constants.RING31);
         g.setRingColors(Constants.RING_COLORS);
-        byte[] data = new byte[Constants.RING31_MAX_BYTES];
-        rand.nextBytes(data);
-        g.setData(data);
-        g.toFile(new File("src/test/resources/4.png"), "png");
+        g.setData("你好，世界！");
+        g.toFile(new File("src/test/resources/5.png"), "png");
     }
 
     @Test

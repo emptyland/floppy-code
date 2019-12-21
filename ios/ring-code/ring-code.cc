@@ -69,16 +69,6 @@ private:
         cv::threshold(dst, output, 108, 255, cv::THRESH_BINARY);
         AppendDebugProgressIfNeeded(output);
         return output;
-//        Rect roiArea = new Rect((int)fourPoints[0].x - 50, (int)fourPoints[0].y - 50, (int)r + 100, (int)r + 100);
-//        Mat dstRoi = new Mat(dst, roiArea);
-//
-//        Imgproc.cvtColor(dstRoi, dst, Imgproc.COLOR_RGB2GRAY);
-//        Imgproc.blur(dst, dst, new Size(3, 3));
-//        Imgproc.equalizeHist(dst, dst);
-//        Mat output = new Mat();
-//        Imgproc.threshold(dst, output, 108, 255, Imgproc.THRESH_BINARY);
-//        writeTestFileIfNeeded(output);
-//        return output;
     }
     
     static cv::Point CenterCal(const cv::Mat_<cv::Point> &mat_of_point);
@@ -145,19 +135,16 @@ Capturer::FindContours(const cv::Mat &gray, std::vector<cv::Mat_<cv::Point>> *au
         if (rate < 1.3 && w < gray.cols / 4.0 && h < gray.rows / 4.0 && area > 60) {
             
             auto ds = hierarchy[i];
-            if (ds[0] > 3) {
-                int count = 0;
-                while (ds[2] != -1) {
-                    ++count;
-                    //ds = hierarchy.get(0, (int) ds[2]);
-                    ds = hierarchy[ds[2]];
-                }
-                if (count >= 5) {
-                    mark_contours.push_back(cv::Mat_<cv::Point>(contours[i], true));
-                }
-                if (count == 2) {
-                    aux_contours->push_back(cv::Mat_<cv::Point>(contours[i], true));
-                }
+            int count = 0;
+            while (ds[2] != -1) {
+                ++count;
+                ds = hierarchy[ds[2]];
+            }
+            if (count >= 5) {
+                mark_contours.push_back(cv::Mat_<cv::Point>(contours[i], true));
+            }
+            if (count == 2) {
+                aux_contours->push_back(cv::Mat_<cv::Point>(contours[i], true));
             }
         }
     }
@@ -334,10 +321,11 @@ PerspectiveResult *Capturer::Perspective(const cv::Point three_points[3],
     
     if (debug()) {
         cv::Mat src_with_lines(src_.clone());
-        cv::line(src_with_lines, poly[0], poly[1], cv::Scalar{0, 0, 255}, 2);
-        cv::line(src_with_lines, poly[1], poly[2], cv::Scalar{0, 0, 255}, 2);
-        cv::line(src_with_lines, poly[2], poly[3], cv::Scalar{0, 0, 255}, 2);
-        cv::line(src_with_lines, poly[3], poly[1], cv::Scalar{0, 0, 255}, 2);
+        cv::Scalar color = {0, 0, 1.0};
+        cv::line(src_with_lines, poly[0], poly[1], color, 2);
+        cv::line(src_with_lines, poly[1], poly[2], color, 2);
+        cv::line(src_with_lines, poly[2], poly[3], color, 2);
+        cv::line(src_with_lines, poly[3], poly[0], color, 2);
         AppendDebugProgressIfNeeded(src_with_lines);
     }
     

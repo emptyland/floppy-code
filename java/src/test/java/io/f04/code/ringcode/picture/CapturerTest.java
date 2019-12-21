@@ -76,7 +76,7 @@ public class CapturerTest {
     @Test
     public void testComplex3() throws Exception {
         Capturer capturer = new Capturer();
-        //capturer.setTest(true);
+        capturer.setTest(true);
         List<CapturedImage> images = capturer.capture(new File("src/test/resources/sample-3.jpeg"));
         assertEquals(1, images.size());
 

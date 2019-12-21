@@ -10,6 +10,8 @@
 		235AA53023A51F7A00AFF989 /* VideoCameraDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 235AA52F23A51F7A00AFF989 /* VideoCameraDelegate.mm */; };
 		2361543F23A75D3B000ECCDD /* ResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2361543E23A75D3B000ECCDD /* ResultViewController.m */; };
 		23710EAA23AC75420061B70A /* ring-code.cc in Sources */ = {isa = PBXBuildFile; fileRef = 23710EA823AC75420061B70A /* ring-code.cc */; };
+		23790F9F23AE6F4B003C7EE8 /* ProgressImagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 23790F9E23AE6F4B003C7EE8 /* ProgressImagesViewController.m */; };
+		23790FA123AE84CE003C7EE8 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23790FA023AE84CE003C7EE8 /* AudioToolbox.framework */; };
 		23BCB51D239F719800E14680 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 23BCB51C239F719800E14680 /* AppDelegate.m */; };
 		23BCB520239F719800E14680 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 23BCB51F239F719800E14680 /* SceneDelegate.m */; };
 		23BCB523239F719800E14680 /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 23BCB522239F719800E14680 /* ViewController.mm */; };
@@ -36,6 +38,9 @@
 		2361543E23A75D3B000ECCDD /* ResultViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ResultViewController.m; sourceTree = "<group>"; };
 		23710EA823AC75420061B70A /* ring-code.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "ring-code.cc"; sourceTree = "<group>"; };
 		23710EA923AC75420061B70A /* ring-code.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ring-code.h"; sourceTree = "<group>"; };
+		23790F9D23AE6F4B003C7EE8 /* ProgressImagesViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ProgressImagesViewController.h; sourceTree = "<group>"; };
+		23790F9E23AE6F4B003C7EE8 /* ProgressImagesViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ProgressImagesViewController.m; sourceTree = "<group>"; };
+		23790FA023AE84CE003C7EE8 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		23BCB518239F719800E14680 /* ringcode.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ringcode.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		23BCB51B239F719800E14680 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		23BCB51C239F719800E14680 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -68,6 +73,7 @@
 				23E4DF5C239F804500466AD2 /* opencv2.framework in Frameworks */,
 				23E4DF56239F7ECF00466AD2 /* AssetsLibrary.framework in Frameworks */,
 				23E4DF54239F7EC400466AD2 /* CoreMedia.framework in Frameworks */,
+				23790FA123AE84CE003C7EE8 /* AudioToolbox.framework in Frameworks */,
 				23E4DF52239F7EB400466AD2 /* CoreVideo.framework in Frameworks */,
 				23E4DF50239F7EAE00466AD2 /* Accelerate.framework in Frameworks */,
 				23E4DF4E239F7EA800466AD2 /* QuartzCore.framework in Frameworks */,
@@ -118,6 +124,8 @@
 				23BCB521239F719800E14680 /* ViewController.h */,
 				23BCB522239F719800E14680 /* ViewController.mm */,
 				23BCB524239F719800E14680 /* Main.storyboard */,
+				23790F9D23AE6F4B003C7EE8 /* ProgressImagesViewController.h */,
+				23790F9E23AE6F4B003C7EE8 /* ProgressImagesViewController.m */,
 				23BCB527239F719A00E14680 /* Assets.xcassets */,
 				23BCB529239F719A00E14680 /* LaunchScreen.storyboard */,
 				23BCB52C239F719A00E14680 /* Info.plist */,
@@ -133,6 +141,7 @@
 		23E4DF44239F7E8C00466AD2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				23790FA023AE84CE003C7EE8 /* AudioToolbox.framework */,
 				23E4DF5B239F804500466AD2 /* opencv2.framework */,
 				23E4DF55239F7ECF00466AD2 /* AssetsLibrary.framework */,
 				23E4DF53239F7EC400466AD2 /* CoreMedia.framework */,
@@ -220,6 +229,7 @@
 				23BCB523239F719800E14680 /* ViewController.mm in Sources */,
 				23BCB51D239F719800E14680 /* AppDelegate.m in Sources */,
 				23BCB52E239F719A00E14680 /* main.m in Sources */,
+				23790F9F23AE6F4B003C7EE8 /* ProgressImagesViewController.m in Sources */,
 				235AA53023A51F7A00AFF989 /* VideoCameraDelegate.mm in Sources */,
 				23BCB520239F719800E14680 /* SceneDelegate.m in Sources */,
 				23710EAA23AC75420061B70A /* ring-code.cc in Sources */,

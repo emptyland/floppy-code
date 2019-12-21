@@ -10,6 +10,7 @@
 #import "VideoCameraDelegate.h"
 #import "ViewController.h"
 #import "ResultViewController.h"
+#import "ProgressImagesViewController.h"
 
 @interface ViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 @property (strong, nonatomic) CvVideoCamera *videoCamera;
@@ -33,7 +34,7 @@
     self.videoCamera.defaultAVCaptureSessionPreset = AVCaptureSessionPresetHigh;
     self.videoCamera.defaultAVCaptureVideoOrientation = AVCaptureVideoOrientationPortrait;
     self.videoCamera.useAVCaptureVideoPreviewLayer = YES;
-    self.videoCamera.defaultFPS = 30;
+    self.videoCamera.defaultFPS = 40;
     self.videoCamera.grayscaleMode = NO;
     self.videoCamera.delegate = self.videoCameraDelegate;
     
@@ -70,6 +71,8 @@
 }
 
 - (void)processorDidScanDone: (NSString *)content progressImages: (NSArray *)images {
+    AudioServicesPlayAlertSound(1151);
+    
     [self stopCamera];
     [self.contentModel addObject:content];
     if (images != nil) {
@@ -77,9 +80,14 @@
     }
     
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    UIViewController *vc = [sb instantiateViewControllerWithIdentifier:@"ResultViewController"
-                                                               creator: ^(NSCoder *coder) {
-        return [[ResultViewController alloc] initWithData:self.contentModel coder:coder]; }];
+//    UIViewController *vc = [sb instantiateViewControllerWithIdentifier:@"ResultViewController"
+//                                                               creator: ^(NSCoder *coder) {
+//        return [[ResultViewController alloc] initWithData:self.contentModel coder:coder]; }];
+    UIViewController *vc = [sb instantiateViewControllerWithIdentifier:@"ProgressImagesViewController"
+                                                           creator: ^(NSCoder *coder) {
+    return [[ProgressImagesViewController alloc] initWithData:self.progressImagesModel coder:coder]; }];
+    //[self.view addSubview:vc.view];
+    //[self addChildViewController:vc];
     [self presentViewController:vc animated:YES completion:nil];
 }
 
@@ -119,7 +127,7 @@
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> *)info {
     NSString *type = [info objectForKey:UIImagePickerControllerMediaType];
-    
+    UIImage *image = nil;
     if ([type isEqualToString:@"public.image"]) {
         NSString *key = nil;
         if (picker.allowsEditing) {
@@ -127,14 +135,19 @@
         } else {
             key = UIImagePickerControllerOriginalImage;
         }
-        UIImage *image = [info objectForKey:key];
-        [self.videoCameraDelegate processNativeImage:image];
+        image = [info objectForKey:key];
     }
     [picker dismissViewControllerAnimated:YES completion:^{}];
+    
+    if (image != nil) {
+        [self.videoCameraDelegate processNativeImage:image];
+    }
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     [picker dismissViewControllerAnimated:YES completion:^{}];
 }
+
+
 
 @end

@@ -45,7 +45,7 @@
 }
 
 - (nonnull UITableViewCell *)tableView:(nonnull UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
-    NSLog(@"index: %@", indexPath);
+    //NSLog(@"index: %@", indexPath);
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"sampleCell"];
     cell.textLabel.text = [self.resultText objectAtIndex:indexPath.row];
     return cell;
