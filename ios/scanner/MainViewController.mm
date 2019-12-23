@@ -48,8 +48,6 @@ static NSString *kUrlPattern = @"http(s)?://([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%&=]*
     self.videoCamera.defaultFPS = 40;
     self.videoCamera.grayscaleMode = NO;
     self.videoCamera.delegate = self.videoCameraDelegate;
-    
-    //[self startCamera];
 }
 
 - (IBAction)onStartStopCamera:(UIBarButtonItem *)sender {
@@ -70,9 +68,6 @@ static NSString *kUrlPattern = @"http(s)?://([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%&=]*
                                                                creator: ^(NSCoder *coder) {
         return [[ResultViewController alloc] initWithData:self.contentModel coder:coder]; }];
     [self presentViewController:vc animated:YES completion:nil];
-    
-//    ResultViewController *vc = [[ResultViewController alloc] initWithData:self.contentModel];
-//    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (IBAction)onSelectPhotosAlbum:(id)sender {
@@ -85,7 +80,7 @@ static NSString *kUrlPattern = @"http(s)?://([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%&=]*
 }
 
 - (void)processorDidScanDone: (NSString *)content progressImages: (NSArray *)images {
-    AudioServicesPlayAlertSound(1151);
+    //AudioServicesPlayAlertSound(1151);
     
     [self stopCamera];
     [self.contentModel insertObject:content atIndex:0];
@@ -105,9 +100,6 @@ static NSString *kUrlPattern = @"http(s)?://([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%&=]*
         UIViewController *vc = [sb instantiateViewControllerWithIdentifier:@"ResultViewController"
                                                                    creator: ^(NSCoder *coder) {
             return [[ResultViewController alloc] initWithData:self.contentModel coder:coder]; }];
-    //    UIViewController *vc = [sb instantiateViewControllerWithIdentifier:@"ProgressImagesViewController"
-    //                                                           creator: ^(NSCoder *coder) {
-    //    return [[ProgressImagesViewController alloc] initWithData:self.progressImagesModel coder:coder]; }];
         [self presentViewController:vc animated:YES completion:nil];
     }
 }
