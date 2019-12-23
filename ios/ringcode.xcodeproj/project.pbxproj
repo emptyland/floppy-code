@@ -16,9 +16,9 @@
 		23936A7623AF0A6C00119CB9 /* rs.c in Sources */ = {isa = PBXBuildFile; fileRef = 23936A7423AF0A6C00119CB9 /* rs.c */; };
 		23AC415123B0A0F900817D41 /* ring-code.cc in Sources */ = {isa = PBXBuildFile; fileRef = 23AC415023B0A0F900817D41 /* ring-code.cc */; };
 		23BBB65123B0D90800D04194 /* crc16.c in Sources */ = {isa = PBXBuildFile; fileRef = 23BBB65023B0D90800D04194 /* crc16.c */; };
+		23BBB65423B1072800D04194 /* MainViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 23BBB65323B1072800D04194 /* MainViewController.mm */; };
 		23BCB51D239F719800E14680 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 23BCB51C239F719800E14680 /* AppDelegate.m */; };
 		23BCB520239F719800E14680 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 23BCB51F239F719800E14680 /* SceneDelegate.m */; };
-		23BCB523239F719800E14680 /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 23BCB522239F719800E14680 /* ViewController.mm */; };
 		23BCB526239F719800E14680 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 23BCB524239F719800E14680 /* Main.storyboard */; };
 		23BCB528239F719A00E14680 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 23BCB527239F719A00E14680 /* Assets.xcassets */; };
 		23BCB52B239F719A00E14680 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 23BCB529239F719A00E14680 /* LaunchScreen.storyboard */; };
@@ -50,13 +50,13 @@
 		23936A7523AF0A6C00119CB9 /* rs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rs.h; sourceTree = "<group>"; };
 		23AC415023B0A0F900817D41 /* ring-code.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "ring-code.cc"; sourceTree = "<group>"; };
 		23BBB65023B0D90800D04194 /* crc16.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = crc16.c; sourceTree = "<group>"; };
+		23BBB65223B1072800D04194 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
+		23BBB65323B1072800D04194 /* MainViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MainViewController.mm; sourceTree = "<group>"; };
 		23BCB518239F719800E14680 /* ringcode.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ringcode.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		23BCB51B239F719800E14680 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		23BCB51C239F719800E14680 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		23BCB51E239F719800E14680 /* SceneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
 		23BCB51F239F719800E14680 /* SceneDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
-		23BCB521239F719800E14680 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		23BCB522239F719800E14680 /* ViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewController.mm; sourceTree = "<group>"; };
 		23BCB525239F719800E14680 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		23BCB527239F719A00E14680 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		23BCB52A239F719A00E14680 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -131,12 +131,12 @@
 		23BCB51A239F719800E14680 /* scanner */ = {
 			isa = PBXGroup;
 			children = (
+				23BBB65223B1072800D04194 /* MainViewController.h */,
+				23BBB65323B1072800D04194 /* MainViewController.mm */,
 				23BCB51B239F719800E14680 /* AppDelegate.h */,
 				23BCB51C239F719800E14680 /* AppDelegate.m */,
 				23BCB51E239F719800E14680 /* SceneDelegate.h */,
 				23BCB51F239F719800E14680 /* SceneDelegate.m */,
-				23BCB521239F719800E14680 /* ViewController.h */,
-				23BCB522239F719800E14680 /* ViewController.mm */,
 				23BCB524239F719800E14680 /* Main.storyboard */,
 				23790F9D23AE6F4B003C7EE8 /* ProgressImagesViewController.h */,
 				23790F9E23AE6F4B003C7EE8 /* ProgressImagesViewController.m */,
@@ -240,8 +240,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				23BCB523239F719800E14680 /* ViewController.mm in Sources */,
 				23BCB51D239F719800E14680 /* AppDelegate.m in Sources */,
+				23BBB65423B1072800D04194 /* MainViewController.mm in Sources */,
 				23BCB52E239F719A00E14680 /* main.m in Sources */,
 				23BBB65123B0D90800D04194 /* crc16.c in Sources */,
 				23790F9F23AE6F4B003C7EE8 /* ProgressImagesViewController.m in Sources */,

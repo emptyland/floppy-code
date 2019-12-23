@@ -11,12 +11,12 @@
 #import "ring-code.h"
 
 @interface VideoCameraDelegate ()
-@property (weak, nonatomic) ViewController *owner;
+@property (weak, nonatomic) MainViewController *owner;
 @end
 
 @implementation VideoCameraDelegate
 
-- (VideoCameraDelegate *)initWithViewController: (ViewController *)owner {
+- (VideoCameraDelegate *)initWithViewController: (MainViewController *)owner {
     NSLog(@"init");
     self->ticks = 0;
     self.owner = owner;

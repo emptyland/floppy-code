@@ -8,11 +8,11 @@
 
 #import <opencv2/videoio/cap_ios.h>
 #import "VideoCameraDelegate.h"
-#import "ViewController.h"
+#import "MainViewController.h"
 #import "ResultViewController.h"
 #import "ProgressImagesViewController.h"
 
-@interface ViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface MainViewController ()<UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 @property (strong, nonatomic) CvVideoCamera *videoCamera;
 @property (strong, nonatomic) VideoCameraDelegate *videoCameraDelegate;
 @property (weak, nonatomic) IBOutlet UIView *cameraView;
@@ -24,7 +24,7 @@
 
 static NSString *kUrlPattern = @"http(s)?://([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%&=]*)?";
 
-@implementation ViewController
+@implementation MainViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
