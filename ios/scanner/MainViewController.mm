@@ -70,6 +70,9 @@ static NSString *kUrlPattern = @"http(s)?://([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%&=]*
                                                                creator: ^(NSCoder *coder) {
         return [[ResultViewController alloc] initWithData:self.contentModel coder:coder]; }];
     [self presentViewController:vc animated:YES completion:nil];
+    
+//    ResultViewController *vc = [[ResultViewController alloc] initWithData:self.contentModel];
+//    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (IBAction)onSelectPhotosAlbum:(id)sender {

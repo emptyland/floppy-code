@@ -21,6 +21,12 @@
     return self;
 }
 
+- (ResultViewController *) initWithData: (NSArray<NSString *> *)data {
+    self = [super init];
+    self.resultText = data;
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
