@@ -11,7 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ResultViewController : UIViewController
-- (ResultViewController *) initWithData: (NSArray *)data coder:(NSCoder *)coder;
+- (ResultViewController *) initWithData: (NSArray<NSString *> *)data coder:(NSCoder *)coder;
 @end
 
 NS_ASSUME_NONNULL_END

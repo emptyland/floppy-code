@@ -11,7 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ProgressImagesViewController : UIViewController
-- (ProgressImagesViewController *) initWithData: (NSArray *)data coder:(NSCoder *)coder;
+- (ProgressImagesViewController *) initWithData: (NSArray<UIImage *> *)data coder:(NSCoder *)coder;
 @end
 
 NS_ASSUME_NONNULL_END

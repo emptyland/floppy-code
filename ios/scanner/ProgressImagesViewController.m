@@ -9,14 +9,14 @@
 #import "ProgressImagesViewController.h"
 
 @interface ProgressImagesViewController ()
-@property (weak, nonatomic) NSArray *progressImages;
+@property (weak, nonatomic) NSArray<UIImage *> *progressImages;
 @property (weak, nonatomic) IBOutlet UIImageView *progressImageView;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *imagesSegment;
 @end
 
 @implementation ProgressImagesViewController
 
-- (ProgressImagesViewController *)initWithData:(NSArray *)data coder:(NSCoder *)coder; {
+- (ProgressImagesViewController *)initWithData:(NSArray<UIImage *> *)data coder:(NSCoder *)coder; {
     self = [super initWithCoder:coder];
     self.progressImages = data;
     return self;

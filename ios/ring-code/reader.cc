@@ -8,6 +8,8 @@ extern "C" {
 #include <limits>
 #include <random>
 
+extern "C" uint16_t crc16(const char *buf, int len);
+
 void Errorf(std::string *err, const char *fmt, ...) {
     va_list ap;
     va_start(ap, fmt);
@@ -237,15 +239,15 @@ bool Reader::Decode(const Metadata &metadata, uint8_t *bits, size_t size) const 
     std::unique_ptr<uint8_t*[]> shards(new uint8_t*[level->GetTotalShardCount()]);
     std::unique_ptr<uint8_t[]> marks(new uint8_t[level->GetTotalShardCount()]);
     for (int i = 0; i < level->GetTotalShardCount(); i++) {
+        uint8_t *p = bits + i * (shard_size + 2); // 2 == crc16 check sum
         shards[i] = new uint8_t[shard_size];
 
-        uint8_t *p = bits + i * (shard_size + 2); // 2 == crc16 check sum
-        uint16_t check_sum = (static_cast<uint16_t>(p[1]) >> 8) | p[0];
-        (void)check_sum;
-        memcpy(shards[i], p + 2, shard_size);
-
-        // TODO: use crc16 checksum.
-        marks[i] = 0;
+        const uint16_t check_sum = (static_cast<uint16_t>(p[0]) << 8) | p[1];
+        const uint16_t verify_sum = ::crc16(reinterpret_cast<char *>(p + 2), shard_size);
+        marks[i] = (verify_sum != check_sum);
+        if (!marks[i]) {
+            memcpy(shards[i], p + 2, shard_size);
+        }
     }
 
     int err = reed_solomon_reconstruct(rs, shards.get(), marks.get(), level->GetTotalShardCount(),

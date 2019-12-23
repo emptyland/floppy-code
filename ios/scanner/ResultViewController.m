@@ -10,12 +10,12 @@
 
 @interface ResultViewController ()<UITableViewDelegate, UITableViewDataSource>
 @property (weak, nonatomic) IBOutlet UITableView *resultTableView;
-@property (strong, nonatomic) NSArray *resultText;
+@property (strong, nonatomic) NSArray<NSString *> *resultText;
 @end
 
 @implementation ResultViewController
 
-- (ResultViewController *)initWithData:(NSArray *)data coder:(NSCoder *)coder; {
+- (ResultViewController *)initWithData:(NSArray<NSString *> *)data coder:(NSCoder *)coder; {
     self = [super initWithCoder:coder];
     self.resultText = data;
     return self;
@@ -45,8 +45,12 @@
 }
 
 - (nonnull UITableViewCell *)tableView:(nonnull UITableView *)tableView cellForRowAtIndexPath:(nonnull NSIndexPath *)indexPath {
-    //NSLog(@"index: %@", indexPath);
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"sampleCell"];
+    if (indexPath.row == 0) {
+        cell.imageView.image = [UIImage systemImageNamed:@"doc.text.fill"];
+    } else {
+        cell.imageView.image = [UIImage systemImageNamed:@"doc.text"];
+    }
     cell.textLabel.text = [self.resultText objectAtIndex:indexPath.row];
     return cell;
 }

@@ -15,6 +15,7 @@
 		23936A7323AF092300119CB9 /* reader.cc in Sources */ = {isa = PBXBuildFile; fileRef = 23936A7223AF092300119CB9 /* reader.cc */; };
 		23936A7623AF0A6C00119CB9 /* rs.c in Sources */ = {isa = PBXBuildFile; fileRef = 23936A7423AF0A6C00119CB9 /* rs.c */; };
 		23AC415123B0A0F900817D41 /* ring-code.cc in Sources */ = {isa = PBXBuildFile; fileRef = 23AC415023B0A0F900817D41 /* ring-code.cc */; };
+		23BBB65123B0D90800D04194 /* crc16.c in Sources */ = {isa = PBXBuildFile; fileRef = 23BBB65023B0D90800D04194 /* crc16.c */; };
 		23BCB51D239F719800E14680 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 23BCB51C239F719800E14680 /* AppDelegate.m */; };
 		23BCB520239F719800E14680 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 23BCB51F239F719800E14680 /* SceneDelegate.m */; };
 		23BCB523239F719800E14680 /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 23BCB522239F719800E14680 /* ViewController.mm */; };
@@ -48,6 +49,7 @@
 		23936A7423AF0A6C00119CB9 /* rs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rs.c; sourceTree = "<group>"; };
 		23936A7523AF0A6C00119CB9 /* rs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rs.h; sourceTree = "<group>"; };
 		23AC415023B0A0F900817D41 /* ring-code.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "ring-code.cc"; sourceTree = "<group>"; };
+		23BBB65023B0D90800D04194 /* crc16.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = crc16.c; sourceTree = "<group>"; };
 		23BCB518239F719800E14680 /* ringcode.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ringcode.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		23BCB51B239F719800E14680 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		23BCB51C239F719800E14680 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -103,6 +105,7 @@
 				23936A7223AF092300119CB9 /* reader.cc */,
 				23936A7423AF0A6C00119CB9 /* rs.c */,
 				23936A7523AF0A6C00119CB9 /* rs.h */,
+				23BBB65023B0D90800D04194 /* crc16.c */,
 			);
 			path = "ring-code";
 			sourceTree = "<group>";
@@ -240,6 +243,7 @@
 				23BCB523239F719800E14680 /* ViewController.mm in Sources */,
 				23BCB51D239F719800E14680 /* AppDelegate.m in Sources */,
 				23BCB52E239F719A00E14680 /* main.m in Sources */,
+				23BBB65123B0D90800D04194 /* crc16.c in Sources */,
 				23790F9F23AE6F4B003C7EE8 /* ProgressImagesViewController.m in Sources */,
 				235AA53023A51F7A00AFF989 /* VideoCameraDelegate.mm in Sources */,
 				23AC415123B0A0F900817D41 /* ring-code.cc in Sources */,

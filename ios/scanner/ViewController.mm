@@ -17,15 +17,26 @@
 @property (strong, nonatomic) VideoCameraDelegate *videoCameraDelegate;
 @property (weak, nonatomic) IBOutlet UIView *cameraView;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *startStopCameraBarButtonItem;
-@property (strong, nonatomic) NSMutableArray *contentModel;
-@property (strong, nonatomic) NSArray *progressImagesModel;
+@property (strong, nonatomic) NSMutableArray<NSString *> *contentModel;
+@property (strong, nonatomic) NSArray<UIImage *> *progressImagesModel;
+@property (strong, nonatomic) NSRegularExpression *urlRegex;
 @end
+
+static NSString *kUrlPattern = @"http(s)?://([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%&=]*)?";
 
 @implementation ViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    NSError *error;
+    self.urlRegex = [NSRegularExpression regularExpressionWithPattern:kUrlPattern
+                                                              options:NSRegularExpressionCaseInsensitive
+                                                                error:&error];
+    if (error) {
+        NSLog(@"regex error: %@", error);
+    }
+
     self.contentModel = [[NSMutableArray alloc] init];
     self.progressImagesModel = [[NSArray alloc] init];
     self.videoCameraDelegate = [[VideoCameraDelegate alloc] initWithViewController:self];
@@ -74,19 +85,28 @@
     AudioServicesPlayAlertSound(1151);
     
     [self stopCamera];
-    [self.contentModel addObject:content];
+    [self.contentModel insertObject:content atIndex:0];
     if (images != nil) {
         self.progressImagesModel = images;
     }
     
-    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    UIViewController *vc = [sb instantiateViewControllerWithIdentifier:@"ResultViewController"
-                                                               creator: ^(NSCoder *coder) {
-        return [[ResultViewController alloc] initWithData:self.contentModel coder:coder]; }];
-//    UIViewController *vc = [sb instantiateViewControllerWithIdentifier:@"ProgressImagesViewController"
-//                                                           creator: ^(NSCoder *coder) {
-//    return [[ProgressImagesViewController alloc] initWithData:self.progressImagesModel coder:coder]; }];
-    [self presentViewController:vc animated:YES completion:nil];
+    if (self.urlRegex != nil  &&
+        [self.urlRegex numberOfMatchesInString:content
+                                       options:0
+                                         range:NSMakeRange(0, content.length)] == 1) {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:content]
+                                           options:[[NSDictionary alloc] init]
+                                 completionHandler:nil];
+    } else {
+        UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        UIViewController *vc = [sb instantiateViewControllerWithIdentifier:@"ResultViewController"
+                                                                   creator: ^(NSCoder *coder) {
+            return [[ResultViewController alloc] initWithData:self.contentModel coder:coder]; }];
+    //    UIViewController *vc = [sb instantiateViewControllerWithIdentifier:@"ProgressImagesViewController"
+    //                                                           creator: ^(NSCoder *coder) {
+    //    return [[ProgressImagesViewController alloc] initWithData:self.progressImagesModel coder:coder]; }];
+        [self presentViewController:vc animated:YES completion:nil];
+    }
 }
 
 - (void)startCamera {
