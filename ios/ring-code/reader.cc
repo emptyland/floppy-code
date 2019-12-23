@@ -219,17 +219,17 @@ bool Reader::ReadMetadata(int r, double angle, Metadata *receive) const {
 bool Reader::Decode(const Metadata &metadata, uint8_t *bits, size_t size) const {
 
     for (int i = 0; i < size; i++) {
-       if (i % 2 == 0) {
-           bits[i] ^= 0x55;
-       } else {
-           bits[i] ^= 0xaa;
-       }
+        if (i % 2 == 0) {
+            bits[i] ^= 0x55;
+        } else {
+            bits[i] ^= 0xaa;
+        }
     }
     const ErrorCorrectionLevel *level = ErrorCorrectionLevel::kLevels[metadata.error_correction_level];
     reed_solomon *rs = reed_solomon_new(level->data_shard_count, level->parity_shard_count);
     if (!rs) {
-       Errorf(error_, "not enough memory: reed_solomon_new");
-       return false;
+        Errorf(error_, "not enough memory: reed_solomon_new");
+        return false;
     }
 
     const int payload_size = level->ComputePayloadSize(static_cast<int>(size));
@@ -237,29 +237,30 @@ bool Reader::Decode(const Metadata &metadata, uint8_t *bits, size_t size) const 
     std::unique_ptr<uint8_t*[]> shards(new uint8_t*[level->GetTotalShardCount()]);
     std::unique_ptr<uint8_t[]> marks(new uint8_t[level->GetTotalShardCount()]);
     for (int i = 0; i < level->GetTotalShardCount(); i++) {
-       shards[i] = new uint8_t[shard_size];
-       
-       uint8_t *p = bits + i * (shard_size + 2); // 2 == crc16 check sum
-       uint16_t check_sum = (static_cast<uint16_t>(p[1]) >> 8) | p[0];
-       (void)check_sum;
-       memcpy(shards[i], p + 2, shard_size);
+        shards[i] = new uint8_t[shard_size];
 
-       marks[i] = 0;
+        uint8_t *p = bits + i * (shard_size + 2); // 2 == crc16 check sum
+        uint16_t check_sum = (static_cast<uint16_t>(p[1]) >> 8) | p[0];
+        (void)check_sum;
+        memcpy(shards[i], p + 2, shard_size);
+
+        // TODO: use crc16 checksum.
+        marks[i] = 0;
     }
 
     int err = reed_solomon_reconstruct(rs, shards.get(), marks.get(), level->GetTotalShardCount(),
                                       shard_size);
     if (err < 0) {
-       Errorf(error_, "reed solomon decode missing fail!");
-       for (int i = 0; i < level->GetTotalShardCount(); i++) {
-           delete [] shards[i];
-       }
-       return false;
+        Errorf(error_, "reed solomon decode missing fail!");
+        for (int i = 0; i < level->GetTotalShardCount(); i++) {
+            delete [] shards[i];
+        }
+        return false;
     }
 
     for (int i = 0; i < level->GetTotalShardCount(); i++) {
-       memcpy(bits + i * shard_size, shards[i], shard_size);
-       delete [] shards[i];
+        memcpy(bits + i * shard_size, shards[i], shard_size);
+        delete [] shards[i];
     }
     reed_solomon_release(rs);
     return true;
