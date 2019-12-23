@@ -42,10 +42,11 @@
             for (size_t i = 0; i < debug_progress.size(); i++) {
                 [images setObject:MatToUIImage(debug_progress[i]) atIndexedSubscript:i];
             }
+            NSString *content = [NSString stringWithUTF8String:data.c_str()];
             
             dispatch_queue_t mainQueue = dispatch_get_main_queue();
             dispatch_async(mainQueue, ^{
-                [self.owner processorDidScanDone:[NSString stringWithUTF8String:data.c_str()] progressImages:images];
+                [self.owner processorDidScanDone:content progressImages:images];
             });
         } else {
             NSLog(@"read error: %@", [NSString stringWithUTF8String:err.c_str()]);

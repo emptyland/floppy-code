@@ -86,8 +86,6 @@
 //    UIViewController *vc = [sb instantiateViewControllerWithIdentifier:@"ProgressImagesViewController"
 //                                                           creator: ^(NSCoder *coder) {
 //    return [[ProgressImagesViewController alloc] initWithData:self.progressImagesModel coder:coder]; }];
-    //[self.view addSubview:vc.view];
-    //[self addChildViewController:vc];
     [self presentViewController:vc animated:YES completion:nil];
 }
 
