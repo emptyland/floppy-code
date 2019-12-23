@@ -41,6 +41,13 @@ CaptureRingCodePhoto(const cv::Mat &input,
                      std::vector<cv::Mat> *debug_progress,
                      std::string *err);
 
+std::string ReadRawImage(const cv::Mat &input,
+                         int center_x,
+                         int center_y,
+                         double ring_width,
+                         std::vector<cv::Mat> *debug_progress,
+                         std::string *err);
 
+void EnsureRingCodeLibraryInitialized();
 
 #endif // RING_CODE_H_

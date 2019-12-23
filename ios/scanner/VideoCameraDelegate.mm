@@ -32,17 +32,26 @@
     std::string err;
     std::shared_ptr<CapturedImage> captured(CaptureRingCodePhoto(image, &debug_progress, &err));
     if (captured) {
-        NSMutableArray *images = [[NSMutableArray alloc] initWithCapacity:debug_progress.size()];
-        for (size_t i = 0; i < debug_progress.size(); i++) {
-            [images setObject:MatToUIImage(debug_progress[i]) atIndexedSubscript:i];
+        std::string data = ReadRawImage(captured->image(),
+                                        captured->image().cols / 2,
+                                        captured->image().rows / 2,
+                                        captured->ApproximateRingWidth(),
+                                        &debug_progress, &err);
+        if (err.empty()) {
+            NSMutableArray *images = [[NSMutableArray alloc] initWithCapacity:debug_progress.size()];
+            for (size_t i = 0; i < debug_progress.size(); i++) {
+                [images setObject:MatToUIImage(debug_progress[i]) atIndexedSubscript:i];
+            }
+            
+            dispatch_queue_t mainQueue = dispatch_get_main_queue();
+            dispatch_async(mainQueue, ^{
+                [self.owner processorDidScanDone:[NSString stringWithUTF8String:data.c_str()] progressImages:images];
+            });
+        } else {
+            NSLog(@"read error: %@", [NSString stringWithUTF8String:err.c_str()]);
         }
-        
-        dispatch_queue_t mainQueue = dispatch_get_main_queue();
-        dispatch_async(mainQueue, ^{
-            [self.owner processorDidScanDone:@"OK" progressImages:images];
-        });
     }
-    NSLog(@"capture! %d", self->ticks++);
+    //NSLog(@"capture! %d", self->ticks++);
 }
 
 - (void)processNativeImage:(UIImage *)image {
@@ -53,14 +62,23 @@
     std::vector<cv::Mat> debug_progress;
     std::string err;
     std::shared_ptr<CapturedImage> captured(CaptureRingCodePhoto(mat, &debug_progress, &err));
+    if (captured) {
+        std::string data = ReadRawImage(captured->image(),
+                                        captured->image().cols / 2,
+                                        captured->image().rows / 2,
+                                        captured->ApproximateRingWidth(),
+                                        &debug_progress, &err);
     
-    NSMutableArray *images = [[NSMutableArray alloc] initWithCapacity:debug_progress.size()];
-    for (size_t i = 0; i < debug_progress.size(); i++) {
-        [images setObject:MatToUIImage(debug_progress[i]) atIndexedSubscript:i];
+        NSMutableArray *images = [[NSMutableArray alloc] initWithCapacity:debug_progress.size()];
+        for (size_t i = 0; i < debug_progress.size(); i++) {
+            [images setObject:MatToUIImage(debug_progress[i]) atIndexedSubscript:i];
+        }
+        if (err.empty()) {
+            [self.owner processorDidScanDone:[NSString stringWithUTF8String:data.c_str()] progressImages:images];
+        } else {
+            NSLog(@"read error: %@", [NSString stringWithUTF8String:err.c_str()]);
+        }
     }
-
-    //NSLog(@"process! %d", self->ticks);
-    [self.owner processorDidScanDone:@"Single" progressImages:images];
 }
 
 @end

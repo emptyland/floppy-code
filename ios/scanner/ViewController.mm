@@ -80,12 +80,12 @@
     }
     
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-//    UIViewController *vc = [sb instantiateViewControllerWithIdentifier:@"ResultViewController"
-//                                                               creator: ^(NSCoder *coder) {
-//        return [[ResultViewController alloc] initWithData:self.contentModel coder:coder]; }];
-    UIViewController *vc = [sb instantiateViewControllerWithIdentifier:@"ProgressImagesViewController"
-                                                           creator: ^(NSCoder *coder) {
-    return [[ProgressImagesViewController alloc] initWithData:self.progressImagesModel coder:coder]; }];
+    UIViewController *vc = [sb instantiateViewControllerWithIdentifier:@"ResultViewController"
+                                                               creator: ^(NSCoder *coder) {
+        return [[ResultViewController alloc] initWithData:self.contentModel coder:coder]; }];
+//    UIViewController *vc = [sb instantiateViewControllerWithIdentifier:@"ProgressImagesViewController"
+//                                                           creator: ^(NSCoder *coder) {
+//    return [[ProgressImagesViewController alloc] initWithData:self.progressImagesModel coder:coder]; }];
     //[self.view addSubview:vc.view];
     //[self addChildViewController:vc];
     [self presentViewController:vc animated:YES completion:nil];
