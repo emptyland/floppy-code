@@ -58,16 +58,11 @@ static NSString *kUrlPattern = @"http(s)?://([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%&=]*
     }
 }
 
-- (IBAction)onOpenResultView:(id)sender {
+- (IBSegueAction ResultViewController *)onOpenResultView:(NSCoder *)coder {
     if (self.videoCamera.running) {
         [self stopCamera];
     }
-
-    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    UIViewController *vc = [sb instantiateViewControllerWithIdentifier:@"ResultViewController"
-                                                               creator: ^(NSCoder *coder) {
-        return [[ResultViewController alloc] initWithData:self.contentModel coder:coder]; }];
-    [self presentViewController:vc animated:YES completion:nil];
+    return [[ResultViewController alloc] initWithData:self.contentModel coder:coder];
 }
 
 - (IBAction)onSelectPhotosAlbum:(id)sender {
@@ -77,6 +72,10 @@ static NSString *kUrlPattern = @"http(s)?://([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%&=]*
     picker.delegate = self;
     picker.allowsEditing = NO;
     [self presentViewController:picker animated:YES completion:nil];
+}
+
+- (IBSegueAction ProgressImagesViewController *)onOpenProgressImagesView:(NSCoder *)coder {
+    return [[ProgressImagesViewController alloc] initWithData:self.progressImagesModel coder:coder];
 }
 
 - (void)processorDidScanDone: (NSString *)content progressImages: (NSArray *)images {
@@ -138,7 +137,9 @@ static NSString *kUrlPattern = @"http(s)?://([\\w-]+\\.)+[\\w-]+(/[\\w- ./?%&=]*
     }
 }
 
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> *)info {
+- (void)imagePickerController:(UIImagePickerController *)picker
+didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> *)info {
+
     NSString *type = [info objectForKey:UIImagePickerControllerMediaType];
     UIImage *image = nil;
     if ([type isEqualToString:@"public.image"]) {
