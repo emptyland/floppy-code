@@ -81,6 +81,7 @@ public class RingCodeUtils {
         generator.setData(data);
         if (colored) {
             generator.setRingColors(Constants.RING_COLORS);
+            generator.setLogoColor(Constants.LOGO_COLOR);
         }
         switch (level == null ? "" : level) {
             case "L":

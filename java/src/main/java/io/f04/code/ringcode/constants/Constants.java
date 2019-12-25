@@ -75,7 +75,7 @@ public interface Constants {
         }
     };
 
-    Color LOGO_COLOR = new Color(57, 57, 57, 255);
+    Color LOGO_COLOR = new Color(0x5dc151);
 
     String LOGO_TEXT = "fc";
 

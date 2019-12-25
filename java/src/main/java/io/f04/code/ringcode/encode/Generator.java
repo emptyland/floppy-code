@@ -31,7 +31,7 @@ public class Generator {
         }
     };
 
-    private Color logoColor = Constants.LOGO_COLOR;
+    private Color logoColor = new Color(57, 57, 57, 255);
 
     public void setData(byte[] data) {
         Constants.RingProfile profile = Constants.RINGS_PROFILE.get(ringSize);
